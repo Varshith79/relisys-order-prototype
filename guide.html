@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Relisys Order App Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--brand:#0F4C9A;--brand-d:#0B3A76;--ink:#111827;--muted:#4B5563;--line:#E5E7EB;--bg:#F5F6F8;--card:#FFFFFF;--tip-bg:#EEF4FC;--tip-line:#BFD3EE;--warn-bg:#FFF7ED;--warn-line:#FDBA74;--warn:#9A3412}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--brand:#7FB0F0;--brand-d:#A9CBF7;--ink:#F3F4F6;--muted:#A3ABB8;--line:#2B3340;--bg:#0F141B;--card:#161D27;--tip-bg:#132235;--tip-line:#29466E;--warn-bg:#2A1C10;--warn-line:#7C4A1E;--warn:#F5B37A}}
+:root[data-theme="dark"]{--brand:#7FB0F0;--brand-d:#A9CBF7;--ink:#F3F4F6;--muted:#A3ABB8;--line:#2B3340;--bg:#0F141B;--card:#161D27;--tip-bg:#132235;--tip-line:#29466E;--warn-bg:#2A1C10;--warn-line:#7C4A1E;--warn:#F5B37A}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,sans-serif;font-size:16px;line-height:1.6}
+a{color:var(--brand)}a:hover{color:var(--brand-d)}
+.wrap{max-width:820px;margin:0 auto;padding:32px 16px 64px}
+header h1{font-size:28px;line-height:1.25;margin:0 0 8px;letter-spacing:-.01em}
+header h1 span{color:var(--brand)}
+.lead{color:var(--muted);margin:0 0 20px}
+.links{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 8px}
+.btn{display:inline-flex;align-items:center;min-height:44px;padding:0 18px;border-radius:10px;background:var(--brand);color:#fff;font-weight:600;text-decoration:none}
+.btn:hover{color:#fff;background:var(--brand-d)}
+.btn.alt{background:var(--card);color:var(--brand);border:1px solid var(--line)}
+nav.toc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 20px;margin:24px 0}
+nav.toc strong{display:block;margin-bottom:6px}
+nav.toc ol{margin:0;padding-left:20px}
+h2{font-size:21px;margin:40px 0 4px;padding-top:8px;scroll-margin-top:16px}
+h2 small{display:block;font-size:13px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px}
+h3{font-size:17px;margin:28px 0 6px}
+.step{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin:14px 0}
+.step h3{margin-top:0}
+ol.do{margin:8px 0;padding-left:22px}ol.do li{margin:6px 0}
+.see{margin:10px 0 0;color:var(--muted);font-size:15px}
+.see b{color:var(--ink)}
+.ui{font-weight:600;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:0 6px;white-space:nowrap}
+.tip,.warn{border-radius:12px;padding:12px 14px;margin:12px 0;font-size:15px}
+.tip{background:var(--tip-bg);border:1px solid var(--tip-line)}
+.warn{background:var(--warn-bg);border:1px solid var(--warn-line);color:var(--warn)}
+table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:15px;margin:12px 0}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:var(--bg);font-weight:600}
+tr:last-child td{border-bottom:0}
+.check li{list-style:none;margin:6px 0}
+.check{padding-left:4px}
+.check li::before{content:"☐ ";color:var(--brand);font-weight:700}
+footer{margin-top:48px;color:var(--muted);font-size:14px;border-top:1px solid var(--line);padding-top:16px}
+@media (max-width:520px){header h1{font-size:24px}.step{padding:16px}table{font-size:14px}th,td{padding:8px}}
+@media print{body{background:#fff}.links,nav.toc{display:none}.step{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1><span>Relisys</span> order app: walk-through guide</h1>
+  <p class="lead">A step-by-step tour of the prototype. Follow it from top to bottom (about 20 minutes) and you will have seen every screen that customers and Relisys staff will use.</p>
+  <div class="links">
+    <a class="btn" href="./" target="_blank" rel="noopener">Open the prototype (laptop)</a>
+    <a class="btn alt" href="phone.html" target="_blank" rel="noopener">Open on your mobile phone</a>
+  </div>
+</header>
+
+<nav class="toc" aria-label="Contents">
+  <strong>Contents</strong>
+  <ol>
+    <li><a href="#before">Before you start</a></li>
+    <li><a href="#screen">How the prototype page works</a></li>
+    <li><a href="#customer">Part A: a customer places an order (steps 1–10)</a></li>
+    <li><a href="#staff">Part B: Relisys staff screens (steps 11–17)</a></li>
+    <li><a href="#status">What the order statuses mean</a></li>
+    <li><a href="#real">What is real and what is demo only</a></li>
+    <li><a href="#trouble">If something looks wrong</a></li>
+    <li><a href="#feedback">Sending your feedback</a></li>
+  </ol>
+</nav>
+
+<h2 id="before"><small>1</small>Before you start</h2>
+<ul>
+  <li><b>Use a laptop or desktop</b> with Chrome, Edge or Safari for the full view. You will see an Android phone and an iPhone side by side. They show the same app, because Relisys will have one app for both kinds of phone.</li>
+  <li><b>Or use your own mobile phone.</b> Open the <a href="phone.html">mobile link</a> to try the app full screen, the way a customer would.</li>
+  <li><b>You don't need to install, sign up or enter a password.</b> Nothing you do here is sent to SAP or to any customer.</li>
+  <li><b>The data:</b> products, item codes, order numbers, delivery challans (DCs), invoices, dates and quantities come from Relisys SAP Business One. <b>Customer and staff names, codes, mobile numbers, emails, GSTINs and addresses are sample data</b>, used to protect real customers' details.</li>
+</ul>
+
+<h2 id="screen"><small>2</small>How the prototype page works</h2>
+<p>On a laptop, the page has three parts:</p>
+<table>
+  <tr><th>Part</th><th>What it does</th></tr>
+  <tr><td><b>Shortcut buttons</b> at the top (Place an order, Other tabs, Relisys staff)</td><td>Jump straight to any screen. Use them if you get lost or want to look at one screen again.</td></tr>
+  <tr><td><b>Explanation box</b> below the buttons</td><td>Describes the screen you are on.</td></tr>
+  <tr><td><b>Two phones</b></td><td>Tap, scroll and type on either phone just as on a real phone. The other phone follows along.</td></tr>
+</table>
+<div class="tip"><b>Start over</b> (right of the explanation box) clears everything you did and returns to the sign-in screen. Use it before showing the prototype to someone else.</div>
+<div class="tip">If your browser window is narrow, only the Android phone is shown. Widen the window to see the iPhone too.</div>
+
+<h2 id="customer"><small>Part A</small>A customer places an order</h2>
+<p>In this part you are a hospital or distributor buying from Relisys. The sample customer used is <b>Harmony Hospital Pvt Ltd (C1105)</b>.</p>
+
+<div class="step">
+  <h3>Step 1 · Sign in with a mobile number</h3>
+  <ol class="do">
+    <li>On the first screen, find the box <span class="ui">Demo: sign in as a customer</span>.</li>
+    <li>Leave <b>Harmony Hospital Pvt Ltd (C1105)</b> selected and tap <span class="ui">Use this customer</span>.</li>
+    <li>The screen asks for a 6-digit code. Type <b>any 6 digits</b> (for example 123456).</li>
+    <li>Tap <span class="ui">Verify &amp; sign in</span>.</li>
+  </ol>
+  <p class="see"><b>In the real app:</b> the customer types their mobile number and Relisys sends a one-time code by SMS. Only mobile numbers saved on the customer in SAP can sign in, so there are no usernames or passwords to remember.</p>
+</div>
+
+<div class="step">
+  <h3>Step 2 · The Products screen (home)</h3>
+  <p>Look at these parts from top to bottom:</p>
+  <ul>
+    <li><b>Ordering for · C1105</b>: the company you are signed in as.</li>
+    <li><b>Bell icon</b> (top right): notifications, with the number of new ones.</li>
+    <li><b>Search box</b>: type a size, item code or product name, for example <i>3.00 x 24</i>, <i>PRP-30024</i> or <i>Pristine</i>.</li>
+    <li><b>Last order</b> card with a <span class="ui">Reorder</span> button that puts the whole last order in the cart again.</li>
+    <li><b>Your products</b>: the products this customer has ordered before.</li>
+    <li><b>All products</b>: every product group from SAP. Switch between <span class="ui">Relisys products</span> and <span class="ui">OEM</span>.</li>
+  </ul>
+  <p class="see"><b>Note:</b> prices and stock are not shown, by design. Relisys applies the agreed prices on the invoice.</p>
+</div>
+
+<div class="step">
+  <h3>Step 3 · Choose sizes and quantities</h3>
+  <ol class="do">
+    <li>Tap <b>Premier+</b>.</li>
+    <li>Under <b>1 · Diameter (mm)</b>, tap a diameter, for example <b>3.00</b>.</li>
+    <li>Under <b>2 · Length &amp; quantity</b>, tap <span class="ui">+</span> next to two or three lengths. Tap <span class="ui">+</span> again to raise a quantity, <span class="ui">−</span> to lower it.</li>
+    <li>Change the diameter and add one more size. The sizes you already added stay in the cart.</li>
+  </ol>
+  <p class="see"><b>Look for:</b> lines like “10 already pending on open orders”. They warn the customer that this size is already ordered and not yet shipped, so they don't order it twice. The bar at the bottom counts sizes and units in the cart.</p>
+  <ol class="do" start="5"><li>Tap <span class="ui">View cart</span>.</li></ol>
+</div>
+
+<div class="step">
+  <h3>Step 4 · Cart and ship-to address</h3>
+  <ol class="do">
+    <li>Check the sizes and quantities. Change them with <span class="ui">+</span> and <span class="ui">−</span>.</li>
+    <li>Under <b>Ship to</b>, pick one of the ship-to addresses. They come from the customer's addresses in SAP (this customer has 14).</li>
+    <li>Tap <span class="ui">Place order</span>.</li>
+  </ol>
+  <p class="see"><b>In the real app:</b> the order goes straight into SAP as a Sales Order for this customer and ship-to address.</p>
+</div>
+
+<div class="step">
+  <h3>Step 5 · My orders</h3>
+  <p>After placing the order, the app opens <b>My orders</b>.</p>
+  <ol class="do">
+    <li>Your new order is at the top with status <b>Placed</b> and the note “Waiting for Relisys to set the delivery date”.</li>
+    <li>Below it are this customer's orders from the last 90 days, from SAP.</li>
+    <li>Tap the filters at the top: <span class="ui">Placed</span>, <span class="ui">Under process</span>, <span class="ui">Partly shipped</span>, <span class="ui">Shipped</span>. Then tap <span class="ui">All</span> again.</li>
+    <li>Optional: tap <span class="ui">Cancel order</span> on your new order. A customer can cancel only until Relisys sets the delivery date.</li>
+  </ol>
+</div>
+
+<div class="step">
+  <h3>Step 6 · Order details: shipments and invoices</h3>
+  <ol class="do">
+    <li>In My orders, tap <b>Order 271001032</b> (status <b>Partly shipped</b>).</li>
+    <li>Read the timeline: Placed → Under process (delivery date set) → each shipment with its <b>DC number</b>, date and units → each <b>invoice number</b>.</li>
+    <li>Tap <span class="ui">Pending</span> to see what is still to ship, and <span class="ui">Shipped</span> to see what has gone.</li>
+    <li><span class="ui">Reorder these 20 sizes</span> puts the same sizes in the cart again.</li>
+    <li>Tap the back arrow (top left) to return.</li>
+  </ol>
+  <p class="see"><b>This answers the customer's most common phone call</b>, “where is my order?”, without them having to call Relisys.</p>
+</div>
+
+<div class="step">
+  <h3>Step 7 · Frequent items</h3>
+  <ol class="do">
+    <li>Tap <span class="ui">Frequent items</span> in the bottom bar.</li>
+    <li>You see the sizes this customer orders most often, how many orders they appeared in, and the usual quantity.</li>
+    <li>Tap <span class="ui">+</span> once: it adds the customer's <b>usual quantity</b> in one tap.</li>
+    <li>Tap the <b>Save</b> icon next to a size, then open the <span class="ui">Saved</span> tab: the customer's own list of sizes to keep handy.</li>
+  </ol>
+</div>
+
+<div class="step">
+  <h3>Step 8 · Notifications</h3>
+  <ol class="do">
+    <li>Go to <span class="ui">Products</span> and tap the <b>bell icon</b> at the top right.</li>
+    <li>You see messages such as “Order received”, “Order … is under process” and “Order … partly shipped · DC … units shipped”.</li>
+    <li>Tap <span class="ui">Mark all read</span>.</li>
+  </ol>
+  <p class="see"><b>In the real app:</b> these also arrive as phone notifications and, where wanted, SMS.</p>
+</div>
+
+<div class="step">
+  <h3>Step 9 · Account</h3>
+  <ol class="do">
+    <li>Tap <span class="ui">Account</span> in the bottom bar.</li>
+    <li>You see the company details from SAP: login mobile (partly hidden), contact, email, GSTIN, billing address and all ship-to addresses.</li>
+    <li>Tap <span class="ui">Show all 14 ship-to addresses</span>.</li>
+  </ol>
+  <p class="see">Customers can't edit these details in the app. Changes are made by Relisys in SAP, so SAP stays the single source of truth.</p>
+</div>
+
+<div class="step">
+  <h3>Step 10 · Help &amp; contact, and sign out</h3>
+  <ol class="do">
+    <li>In Account, tap <span class="ui">Help &amp; contact Relisys</span>.</li>
+    <li>Open the common questions, for example “What do the order statuses mean?”.</li>
+    <li>Go back to Account and tap <span class="ui">Sign out</span>. You are back at the sign-in screen.</li>
+  </ol>
+</div>
+
+<h2 id="staff"><small>Part B</small>Relisys staff screens</h2>
+<p>Staff use <b>the same app</b>. They sign in with their SAP Business One username and password and get extra screens. Staff can look at the app as any customer sees it, but they don't place orders for customers.</p>
+
+<div class="step">
+  <h3>Step 11 · Staff sign in</h3>
+  <ol class="do">
+    <li>On the sign-in screen, tap <span class="ui">Relisys staff? Sign in with SAP</span> at the bottom.</li>
+    <li>In the box <span class="ui">Demo: sign in as a staff user</span>, leave <b>Relisys Admin (manager)</b> selected.</li>
+    <li>Tap <span class="ui">Use this SAP user</span>.</li>
+  </ol>
+  <p class="see"><b>In the real app:</b> SAP checks the username and password. The app never stores the password. Only SAP users given access in Step 17 can sign in, and a user locked in SAP loses access straight away.</p>
+</div>
+
+<div class="step">
+  <h3>Step 12 · Customers list</h3>
+  <ol class="do">
+    <li>You see every customer that has a Mobile Phone in SAP, busiest first, with their number of orders and whether they can sign in.</li>
+    <li>Type part of a name or code in the search box.</li>
+    <li>Try the filters: <span class="ui">Ordered in 90 days</span>, <span class="ui">Products hidden</span>, <span class="ui">Blocked</span>, then <span class="ui">All</span>.</li>
+    <li>Tap <b>Harmony Hospital Pvt Ltd</b>. A panel opens with its mobile, contact, orders and the products it sees.</li>
+  </ol>
+</div>
+
+<div class="step">
+  <h3>Step 13 · Open as customer (view only)</h3>
+  <ol class="do">
+    <li>In the panel, tap <span class="ui">Open as customer</span>.</li>
+    <li>A dark bar at the top says <b>“Staff view · view only”</b>. Below it is exactly what this customer sees.</li>
+    <li>Open a product and tap <span class="ui">+</span>. The app shows “View only. Customers place their own orders.”</li>
+    <li>Open <span class="ui">My orders</span> to see the customer's orders as they see them. This helps when a customer calls with a question.</li>
+    <li>Tap <span class="ui">Exit</span> in the dark bar to return to the staff screens.</li>
+  </ol>
+</div>
+
+<div class="step">
+  <h3>Step 14 · Choose the products a customer sees</h3>
+  <ol class="do">
+    <li>Tap <span class="ui">Products shown</span> in the bottom bar (or <span class="ui">Choose products shown</span> in a customer's panel).</li>
+    <li>Pick a customer in the <b>Customer</b> list.</li>
+    <li>Tap the <span class="ui">OEM-FG</span> filter and switch off one or two product groups. Their line changes to “Hidden from customer”, and the counts at the top update.</li>
+    <li>Tap <span class="ui">Open as customer</span>: the hidden groups are gone from that customer's products and search. Tap <span class="ui">Exit</span>.</li>
+    <li>Tap <span class="ui">Show everything</span> to undo.</li>
+  </ol>
+  <p class="see">Each customer sees only the products Relisys wants them to see, for example OEM products only for that OEM's customers.</p>
+</div>
+
+<div class="step">
+  <h3>Step 15 · Stop a customer from signing in</h3>
+  <ol class="do">
+    <li>Go to <span class="ui">Customers</span>, tap a customer, and switch off <span class="ui">Allow sign-in</span>. The customer now shows as <b>Blocked</b>.</li>
+    <li>Tap <span class="ui">Sign out</span> (top right) and try to sign in as that customer from the demo list. The app says sign-in is turned off and asks them to contact Relisys.</li>
+    <li>Sign in as staff again (Step 11) and switch <span class="ui">Allow sign-in</span> back on.</li>
+  </ol>
+</div>
+
+<div class="step">
+  <h3>Step 16 · Staff access</h3>
+  <ol class="do">
+    <li>Tap <span class="ui">Staff access</span> in the bottom bar.</li>
+    <li>You see the SAP users. <b>Superusers</b> show “Always”: they always have access.</li>
+    <li>Switch on access for another user, for example <b>Manoj Rao (user03)</b>.</li>
+  </ol>
+</div>
+
+<div class="step">
+  <h3>Step 17 · Sign out</h3>
+  <ol class="do">
+    <li>Tap <span class="ui">Sign out</span> at the top right.</li>
+    <li>When you have finished, tap <span class="ui">Start over</span> on the prototype page to clear everything.</li>
+  </ol>
+</div>
+
+<h2 id="status"><small>Reference</small>What the order statuses mean</h2>
+<p>Statuses are worked out from SAP automatically. Nobody has to update them by hand.</p>
+<table>
+  <tr><th>Status</th><th>Meaning</th><th>Comes from SAP</th></tr>
+  <tr><td><b>Placed</b></td><td>Relisys has the order.</td><td>Sales Order created</td></tr>
+  <tr><td><b>Under process</b></td><td>Relisys has set a delivery date.</td><td>Delivery date on the Sales Order</td></tr>
+  <tr><td><b>Partly shipped</b></td><td>Some sizes have been dispatched.</td><td>Delivery (DC) for part of the order</td></tr>
+  <tr><td><b>Shipped</b></td><td>Everything has been dispatched.</td><td>Deliveries cover the whole order</td></tr>
+</table>
+
+<h2 id="real"><small>Reference</small>What is real and what is demo only</h2>
+<table>
+  <tr><th>In this prototype</th><th>In the finished app</th></tr>
+  <tr><td>Pick a customer from a list; any 6-digit code works</td><td>Customer types their mobile number and gets a real SMS code</td></tr>
+  <tr><td>Pick a staff user; no password is checked</td><td>SAP checks the staff username and password</td></tr>
+  <tr><td>Orders are saved only in your browser</td><td>Orders go into SAP as Sales Orders</td></tr>
+  <tr><td>SAP data as of 26 Nov 2026</td><td>Live data from SAP, always up to date</td></tr>
+  <tr><td>Sample customer and staff names</td><td>Real customers and staff</td></tr>
+  <tr><td>Call, WhatsApp and Email buttons do nothing</td><td>They open the phone, WhatsApp and email</td></tr>
+  <tr><td>Runs in a web browser</td><td>One app on Google Play and the Apple App Store</td></tr>
+</table>
+
+<h2 id="trouble"><small>Help</small>If something looks wrong</h2>
+<ul>
+  <li><b>Stuck or confused?</b> Tap <span class="ui">Start over</span>, or use the shortcut buttons at the top of the page.</li>
+  <li><b>Only one phone shows:</b> widen the browser window, or zoom out (Ctrl and minus, or Cmd and minus on a Mac).</li>
+  <li><b>Things you did disappear:</b> the prototype saves in your browser, so a private window or cleared history starts fresh. This is expected.</li>
+  <li><b>Page doesn't load:</b> check your internet connection and reload the page.</li>
+</ul>
+
+<h2 id="feedback"><small>Next</small>Sending your feedback</h2>
+<p>Please note anything you would change, add or remove. For each point, mention the <b>step number or screen name</b> from this guide so we know exactly where you mean. Screenshots help a lot.</p>
+<p>Questions worth thinking about:</p>
+<ul class="check">
+  <li>Are the products, sizes and groups shown the way customers think about them?</li>
+  <li>Is anything missing on the cart or order screens (for example a PO number or remarks)?</li>
+  <li>Are the four order statuses clear enough for customers?</li>
+  <li>Which products should be hidden for which customers?</li>
+  <li>Which Relisys staff should have access to the staff screens?</li>
+  <li>Which notifications should customers get, and by app, SMS or both?</li>
+</ul>
+
+<footer>Relisys order app · prototype guide · SAP data as of 26 Nov 2026. Customer and staff details in the prototype are sample data.</footer>
+</div>
+</body>
+</html>
