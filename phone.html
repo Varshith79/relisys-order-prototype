@@ -451,8 +451,9 @@ V.svis=function(){
 V.sstaff=function(){
   var L=staffList(), n=L.filter(hasAccess).length;
   var h=sHdr('Staff access','SAP users who can sign in to the staff screens. <b style="color:var(--ink)">'+n+'</b> of '+L.length+' have access.');
-  h+='<main class="main" style="gap:8px"><div class="note">'+ic('info',18,'#4B5563')+'<span>SAP superusers always have access. Lock a user in SAP and they lose access straight away.</span></div>';
-  h+=L.map(function(u){var on=hasAccess(u);return '<div class="srow"><span class="col" style="gap:3px"><span class="b" style="font-size:15px">'+esc(u[1])+'</span><span class="tiny">'+esc(u[0])+(u[2]?' · '+esc(u[2]):'')+' · '+(u[3]?'<b style="color:var(--brand)">Superuser</b>':'User')+'</span></span>'+(u[3]?'<span class="tiny sb">Always</span>':'<button class="toggle'+(on?' on':'')+'" data-sacc="'+esc(u[0])+'" aria-pressed="'+on+'" aria-label="App access for '+esc(u[1])+'"><i></i></button>')+'</div>';}).join('')||'<div class="empty">No SAP users in this snapshot.</div>';
+  var sup=!!staffUser()[3];
+  h+='<main class="main" style="gap:8px"><div class="note">'+ic(sup?'info':'lock',18,'#4B5563')+'<span>'+(sup?'Only SAP superusers can give or remove access. ':'<b>View only.</b> Only SAP superusers can give or remove access. Ask a superuser to change it. ')+'Superusers always have access. Lock a user in SAP and they lose access straight away.</span></div>';
+  h+=L.map(function(u){var on=hasAccess(u);if(!u[3]&&!sup)return '<div class="srow"><span class="col" style="gap:3px"><span class="b" style="font-size:15px">'+esc(u[1])+'</span><span class="tiny">'+esc(u[0])+(u[2]?' · '+esc(u[2]):'')+' · User</span></span><span class="tiny sb" style="color:'+(on?'var(--ink)':'var(--muted)')+'">'+(on?'Has access':'No access')+'</span></div>';return '<div class="srow"><span class="col" style="gap:3px"><span class="b" style="font-size:15px">'+esc(u[1])+'</span><span class="tiny">'+esc(u[0])+(u[2]?' · '+esc(u[2]):'')+' · '+(u[3]?'<b style="color:var(--brand)">Superuser</b>':'User')+'</span></span>'+(u[3]?'<span class="tiny sb">Always</span>':'<button class="toggle'+(on?' on':'')+'" data-sacc="'+esc(u[0])+'" aria-pressed="'+on+'" aria-label="App access for '+esc(u[1])+'"><i></i></button>')+'</div>';}).join('')||'<div class="empty">No SAP users in this snapshot.</div>';
   return h+'</main>'+snav('sstaff');
 };
 function viewBar(){var c=S.cust;return '<div class="vbar" role="status">'+ic('eye',18,'#fff')+'<span style="flex:1"><b>Staff view · view only.</b> You see what '+esc(c?c.name:'the customer')+' sees.</span><button data-act="sexit">Exit</button></div>';}
@@ -527,7 +528,7 @@ app.addEventListener('click',function(e){
   if(d.sf){S.sf=d.sf;render();return;}
   if(d.vf){S.vf=d.vf;render();return;}
   if(d.shide){var hm=S.hide[S.scust]=S.hide[S.scust]||{};if(hm[d.shide])delete hm[d.shide];else hm[d.shide]=1;save();render();return;}
-  if(d.sacc){S.access[d.sacc]=!S.access[d.sacc];save();render();return;}
+  if(d.sacc){if(!staffUser()[3]){toast('Only SAP superusers can change staff access.');return;}S.access[d.sacc]=!S.access[d.sacc];save();render();return;}
   if(d.go){if(d.go==='notif')S.prev=S.screen;go(d.go);return;}
   if(d.inc){var cur=S.cart[d.inc]||0;setQty(d.inc,cur===0&&d.usual?+d.usual:cur+1);return;}
   if(d.dec){setQty(d.dec,(S.cart[d.dec]||0)-1);return;}
