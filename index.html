@@ -123,7 +123,7 @@ h1 span{color:var(--brand)}
 (function(){
   var FLOWS=[
     ['Place an order',[
-      ['login','Sign in','The customer enters the Mobile Phone saved on their customer in SAP and gets a 6-digit code by SMS. In this prototype any 6 digits work, or pick a customer from the demo list.'],
+      ['login','Sign in','The customer enters the Mobile Phone saved on their customer in SAP and gets a 6-digit code by SMS. In this prototype, type a sample number{MOB}, tap Send code, then type any 6 digits.'],
       ['home','Products','The products Relisys has made visible to this customer, grouped by range. No prices and no stock are shown.'],
       ['product','Sizes','Pick a diameter, then add lengths. Sizes the customer orders often start at their usual quantity.'],
       ['cart','Cart & ship-to','Check sizes and units, choose one of the ship-to addresses from SAP, and place the order. It becomes a Sales Order in SAP.'],
@@ -164,6 +164,12 @@ h1 span{color:var(--brand)}
     document.getElementById('ex-d').textContent=INFO[scr][2];
   }
   mark('login');
+  // Show sample mobile numbers from the prototype data, so the client can sign in like a real customer.
+  fetch('data.json').then(function(r){return r.json();}).then(function(d){
+    var s=(d.demoPicks||[]).slice(0,2).map(function(k){var c=d.customers.find(function(x){return x.code===k;});return c&&c.mobile?c.mobile+' ('+c.name+')':'';}).filter(Boolean);
+    INFO.login[2]=INFO.login[2].replace('{MOB}',s.length?' such as '+s.join(' or '):'');
+    if(document.querySelector('.chip.on[data-scr=login]'))mark('login');
+  }).catch(function(){INFO.login[2]=INFO.login[2].replace('{MOB}','');if(document.querySelector('.chip.on[data-scr=login]'))mark('login');});
   host.addEventListener('click',function(e){
     var b=e.target.closest('[data-scr]');if(!b)return;
     try{frames[0].contentWindow.postMessage({rel:'jump',screen:b.dataset.scr},'*');}catch(err){}

@@ -94,14 +94,14 @@ footer{margin-top:48px;color:var(--muted);font-size:14px;border-top:1px solid va
 <div class="tip">If your browser window is narrow, only the Android phone is shown. Widen the window to see the iPhone too.</div>
 
 <h2 id="customer"><small>Part A</small>A customer places an order</h2>
-<p>In this part you are a hospital or distributor buying from Relisys. The sample customer used is <b>Harmony Hospital Pvt Ltd (C1105)</b>.</p>
+<p>In this part you are a hospital or distributor buying from Relisys. The sample customer used is <b>Harmony Hospital Pvt Ltd (C1105)</b>, sample mobile number <b>6358699199</b>.</p>
 
 <div class="step">
   <h3>Step 1 · Sign in with a mobile number</h3>
   <ol class="do">
-    <li>On the first screen, find the box <span class="ui">Demo: sign in as a customer</span>.</li>
-    <li>Leave <b>Harmony Hospital Pvt Ltd (C1105)</b> selected and tap <span class="ui">Use this customer</span>.</li>
-    <li>The screen asks for a 6-digit code. Type <b>any 6 digits</b> (for example 123456).</li>
+    <li>In <b>Mobile number</b>, type the sample number <b>6358699199</b>. It belongs to the sample customer Harmony Hospital Pvt Ltd.</li>
+    <li>Tap <span class="ui">Send code</span>.</li>
+    <li>The screen asks for a 6-digit code. No SMS is sent in the prototype, so type <b>any 6 digits</b> (for example 123456).</li>
     <li>Tap <span class="ui">Verify &amp; sign in</span>.</li>
   </ol>
   <p class="see"><b>In the real app:</b> the customer types their mobile number and Relisys sends a one-time code by SMS. Only mobile numbers saved on the customer in SAP can sign in, so there are no usernames or passwords to remember.</p>
@@ -255,7 +255,7 @@ footer{margin-top:48px;color:var(--muted);font-size:14px;border-top:1px solid va
   <h3>Step 15 · Stop a customer from signing in</h3>
   <ol class="do">
     <li>Go to <span class="ui">Customers</span>, tap a customer, and switch off <span class="ui">Allow sign-in</span>. The customer now shows as <b>Blocked</b>.</li>
-    <li>Tap <span class="ui">Sign out</span> (top right) and try to sign in as that customer from the demo list. The app says sign-in is turned off and asks them to contact Relisys.</li>
+    <li>Tap <span class="ui">Sign out</span> (top right). On the sign-in screen, type that customer's number and tap <span class="ui">Send code</span>. The app says sign-in is turned off and asks them to contact Relisys. (Block <b>Harmony Hospital Pvt Ltd</b> to try this with the number you already know, 6358699199.)</li>
     <li>Sign in as staff again (Step 11) and switch <span class="ui">Allow sign-in</span> back on.</li>
   </ol>
 </div>
@@ -291,7 +291,7 @@ footer{margin-top:48px;color:var(--muted);font-size:14px;border-top:1px solid va
 <h2 id="real"><small>Reference</small>What is real and what is demo only</h2>
 <table>
   <tr><th>In this prototype</th><th>In the finished app</th></tr>
-  <tr><td>Pick a customer from a list; any 6-digit code works</td><td>Customer types their mobile number and gets a real SMS code</td></tr>
+  <tr><td>Type a sample mobile number; no SMS is sent and any 6-digit code works</td><td>Customer types their mobile number and gets a real SMS code</td></tr>
   <tr><td>Pick a staff user; no password is checked</td><td>SAP checks the staff username and password</td></tr>
   <tr><td>Orders are saved only in your browser</td><td>Orders go into SAP as Sales Orders</td></tr>
   <tr><td>SAP data as of 26 Nov 2026</td><td>Live data from SAP, always up to date</td></tr>
