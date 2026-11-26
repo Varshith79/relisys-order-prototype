@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+</head>
+<body style="margin:0">
+<title>Relisys Order Portal Prototype</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap">
+<style>
+/* Layout: a header of flow shortcuts, then two phone frames (Android, iPhone) side by side that mirror one app state. */
+:root{
+  --bg:#EEF1F5; --panel:#FFFFFF; --ink:#111827; --muted:#4B5563; --line:#D9DEE6;
+  --brand:#0F4C9A; --brand-soft:#E3EBF6; --bezel:#1B1F26; --bezel-edge:#3A404B;
+  --f-head:"Space Grotesk",Inter,system-ui,sans-serif; --f-body:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#12161C; --panel:#1A2029; --ink:#E8ECF2; --muted:#A3ADBB; --line:#2C3440;
+  --brand:#7FB0EE; --brand-soft:#1F2E44; --bezel:#05070A; --bezel-edge:#2A303A; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12161C; --panel:#1A2029; --ink:#E8ECF2; --muted:#A3ADBB; --line:#2C3440;
+  --brand:#7FB0EE; --brand-soft:#1F2E44; --bezel:#05070A; --bezel-edge:#2A303A; color-scheme:dark}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:14px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+*{box-sizing:border-box}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.top{max-width:1100px;margin:0 auto;padding-block:16px 10px;display:flex;flex-direction:column;gap:12px}
+.title-row{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 16px;justify-content:space-between}
+h1{font-family:var(--f-head);font-size:22px;font-weight:700;letter-spacing:-.01em;margin:0;text-wrap:balance}
+h1 span{color:var(--brand)}
+.note{color:var(--muted);font-size:13px;margin:0}
+.flows{display:flex;flex-direction:column;gap:8px}
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.flow-label{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);min-width:92px}
+.chip{border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:500;display:inline-flex;align-items:center;gap:6px;min-height:34px}
+.chip .n{font-variant-numeric:tabular-nums;font-size:11px;font-weight:700;color:var(--muted)}
+.chip:hover{border-color:var(--brand)}
+.chip.on{background:var(--brand);border-color:var(--brand);color:#fff}
+:root[data-theme="dark"] .chip.on{color:#0B1320}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .chip.on{color:#0B1320}}
+.chip.on .n{color:inherit;opacity:.8}
+.arrow{color:var(--muted);font-size:12px}
+.explain{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 14px;display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap}
+.explain b{font-family:var(--f-head);font-size:15px}
+.explain p{margin:2px 0 0;color:var(--muted);max-width:75ch;line-height:1.5}
+.explain .grow{flex:1;min-width:0}
+.reset{border:1px solid var(--line);background:transparent;border-radius:8px;padding:6px 12px;font-size:13px;min-height:34px}
+.stage{display:flex;justify-content:center;align-items:flex-start;gap:40px;padding-block:8px 28px;flex-wrap:wrap}
+.device{display:flex;flex-direction:column;align-items:center;gap:8px}
+.device-label{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.scaler{transform-origin:top center}
+.phone{background:var(--bezel);border:1px solid var(--bezel-edge);box-shadow:0 18px 40px rgba(15,30,60,.18);position:relative;overflow:hidden}
+.phone .screen{background:#fff;position:absolute;overflow:hidden;display:flex;flex-direction:column}
+.phone .bar{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;color:#111827;background:#fff;font-weight:600;font-family:var(--f-body)}
+.phone iframe{border:0;width:100%;flex:1;display:block;background:#F5F6F8}
+/* Android 360 x 800 */
+.android{width:376px;height:816px;border-radius:30px}
+.android .screen{inset:8px;border-radius:22px}
+.android .bar{height:26px;padding:0 16px;font-size:12px}
+.android .cam{position:absolute;top:15px;left:50%;width:10px;height:10px;margin-left:-5px;border-radius:50%;background:#0B0D10;z-index:2}
+.android .gest{height:16px;background:#fff;display:flex;justify-content:center;align-items:center;flex-shrink:0}
+.android .gest i{width:96px;height:4px;border-radius:2px;background:#9CA3AF}
+/* iPhone 390 x 844 */
+.iphone{width:410px;height:864px;border-radius:56px}
+.iphone .screen{inset:10px;border-radius:46px}
+.iphone .bar{height:47px;padding:0 30px 0 34px;font-size:15px}
+.iphone .island{position:absolute;top:21px;left:50%;width:120px;height:34px;margin-left:-60px;border-radius:20px;background:#000;z-index:2}
+.iphone .gest{height:24px;background:#fff;display:flex;justify-content:center;align-items:center;flex-shrink:0}
+.iphone .gest i{width:134px;height:5px;border-radius:3px;background:#111827}
+.sig{display:flex;gap:4px;align-items:center}
+.sig span{display:inline-block;background:#111827;border-radius:1px;width:3px}
+@media (max-width: 860px){.device.ios{display:none}}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+
+<header class="top">
+  <div class="title-row">
+    <h1><span>Relisys</span> Order Portal · prototype</h1>
+    <p class="note">Products, orders and shipments from Relisys SAP; customer and staff details are sample data. Tap or type in either phone; both phones stay in step.</p>
+  </div>
+  <div class="flows" id="flows"></div>
+  <div class="explain">
+    <div class="grow"><b id="ex-t">Sign in</b><p id="ex-d"></p></div>
+    <button class="reset" id="reset" type="button">Start over</button>
+  </div>
+</header>
+
+<main class="stage" id="stage">
+  <div class="device">
+    <div class="scaler">
+      <div class="phone android">
+        <div class="cam"></div>
+        <div class="screen">
+          <div class="bar"><span>9:41</span><span class="sig"><span style="height:5px"></span><span style="height:8px"></span><span style="height:11px"></span> 5G</span></div>
+          <iframe id="f-android" src="phone.html" title="Relisys app on Android"></iframe>
+          <div class="gest"><i></i></div>
+        </div>
+      </div>
+    </div>
+    <div class="device-label">Android · 360 × 800</div>
+  </div>
+  <div class="device ios">
+    <div class="scaler">
+      <div class="phone iphone">
+        <div class="island"></div>
+        <div class="screen">
+          <div class="bar"><span>9:41</span><span class="sig"><span style="height:5px"></span><span style="height:8px"></span><span style="height:11px"></span> 5G</span></div>
+          <iframe id="f-ios" src="phone.html" title="Relisys app on iPhone"></iframe>
+          <div class="gest"><i></i></div>
+        </div>
+      </div>
+    </div>
+    <div class="device-label">iPhone · 390 × 844</div>
+  </div>
+</main>
+
+<script>
+(function(){
+  var FLOWS=[
+    ['Place an order',[
+      ['login','Sign in','The customer enters the Mobile Phone saved on their customer in SAP and gets a 6-digit code by SMS. In this prototype any 6 digits work, or pick a customer from the demo list.'],
+      ['home','Products','The products Relisys has made visible to this customer, grouped by range. No prices and no stock are shown.'],
+      ['product','Sizes','Pick a diameter, then add lengths. Sizes the customer orders often start at their usual quantity.'],
+      ['cart','Cart & ship-to','Check sizes and units, choose one of the ship-to addresses from SAP, and place the order. It becomes a Sales Order in SAP.'],
+      ['orders','My orders','Every order with its status, worked out from SAP dates: Placed, Under process, Partly shipped, Shipped.'],
+      ['order','Order details','What is shipped and what is still pending, size by size. The customer can cancel or order the same items again.']
+    ]],
+    ['Other tabs',[
+      ['freq','Frequent items','The sizes this customer orders most, from their recent orders, ready to add in one tap.'],
+      ['notif','Notifications','Updates when Relisys changes the delivery date or ships the order.'],
+      ['account','Account','Company details, GSTIN, ship-to addresses and payment terms, read from SAP.'],
+      ['help','Help & contact','Common questions and how to reach Relisys.']
+    ]],
+    ['Relisys staff',[
+      ['slogin','Staff sign in','Relisys staff sign in to the same app with their SAP Business One username and password. SAP checks the password; the app never stores it. In this prototype, pick a SAP user from the demo list.'],
+      ['shome','Customers','Every customer with a Mobile Phone in SAP. Staff can turn a customer’s sign-in on or off, and open their details.'],
+      ['view','Open as customer','Staff see exactly what the customer sees, view only. Customers place their own orders.'],
+      ['svis','Products shown','Hide product groups per customer. Hidden groups disappear from that customer’s catalogue, search and frequent items straight away.'],
+      ['sstaff','Staff access','Choose which SAP users can use the staff screens. SAP superusers always have access.']
+    ]]
+  ];
+  var INFO={}, frames=[document.getElementById('f-android'),document.getElementById('f-ios')];
+  var host=document.getElementById('flows'), n=0;
+  FLOWS.forEach(function(f){
+    var row=document.createElement('div');row.className='flow';
+    var h='<span class="flow-label">'+f[0]+'</span>';
+    f[1].forEach(function(s,i){
+      INFO[s[0]]=s; n++;
+      if(i&&f[0]==='Place an order')h+='<span class="arrow" aria-hidden="true">→</span>';
+      h+='<button class="chip" type="button" data-scr="'+s[0]+'">'+(f[0]==='Place an order'?'<span class="n">'+n+'</span>':'')+s[1]+'</button>';
+    });
+    row.innerHTML=h;host.appendChild(row);
+  });
+  // The order-details screen highlights "Order details"; any screen not in the list keeps the last highlight.
+  function mark(scr){
+    if(!INFO[scr])return;
+    [].forEach.call(document.querySelectorAll('.chip'),function(c){var on=c.dataset.scr===scr;c.classList.toggle('on',on);c.setAttribute('aria-pressed',on);});
+    document.getElementById('ex-t').textContent=INFO[scr][1];
+    document.getElementById('ex-d').textContent=INFO[scr][2];
+  }
+  mark('login');
+  host.addEventListener('click',function(e){
+    var b=e.target.closest('[data-scr]');if(!b)return;
+    try{frames[0].contentWindow.postMessage({rel:'jump',screen:b.dataset.scr},'*');}catch(err){}
+  });
+  document.getElementById('reset').addEventListener('click',function(){
+    frames.forEach(function(f){try{f.contentWindow.postMessage({rel:'reset'},'*');}catch(err){}});
+  });
+  window.addEventListener('message',function(e){
+    var m=e.data;if(!m||m.rel!=='sync')return;
+    frames.forEach(function(f){if(f.contentWindow!==e.source){try{f.contentWindow.postMessage(m,'*');}catch(err){}}});
+    var CUSTSCR={home:1,product:1,cart:1,orders:1,order:1,freq:1,notif:1,account:1,help:1};
+    mark(m.st.view&&CUSTSCR[m.st.screen]?'view':m.st.screen);
+  });
+  // Scale the phones down so both fit the window height.
+  function fit(){
+    var top=document.querySelector('.top').offsetHeight, avail=window.innerHeight-top-60;
+    var s=Math.max(0.55,Math.min(1,avail/864));
+    [].forEach.call(document.querySelectorAll('.scaler'),function(el){
+      var ph=el.firstElementChild;el.style.transform='scale('+s+')';
+      el.style.width=ph.offsetWidth*s+'px';el.style.height=ph.offsetHeight*s+'px';el.style.transformOrigin='top left';
+    });
+  }
+  window.addEventListener('resize',fit);fit();
+})();
+</script>
+
+</body>
+</html>

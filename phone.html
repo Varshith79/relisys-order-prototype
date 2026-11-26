@@ -1,0 +1,589 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Relisys Order Portal</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<style>
+/* Single light look, matching the Relisys design canvas. Phone-width app column, centred on wide screens. */
+:root{--bg:#F5F6F8;--surface:#FFFFFF;--ink:#111827;--muted:#4B5563;--faint:#6B7280;--line:#E5E7EB;--line2:#F1F2F4;--brand:#0F4C9A;--brand-soft:#E8EDF4;--warn-bg:#FEF3C7;--warn:#92400E;--ok-bg:#DCFCE7;--ok:#166534;--bad-bg:#FEE2E2;--bad:#991B1B;--hot:#C2410C;--outer:#E9ECF1;color-scheme:light}
+html,body{height:100%}
+body{background:var(--outer);color:var(--ink);font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:14px;-webkit-tap-highlight-color:transparent}
+*{box-sizing:border-box}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+#app{max-width:430px;height:100%;margin:0 auto;background:var(--bg);display:flex;flex-direction:column;position:relative;overflow:hidden;box-shadow:0 0 0 1px var(--line)}
+.hdr{background:var(--surface);border-bottom:1px solid var(--line);padding:14px 16px 12px;display:flex;flex-direction:column;gap:10px;flex-shrink:0}
+.hdr-row{display:flex;align-items:center;gap:8px}
+.brand{font-size:20px;font-weight:700;letter-spacing:-.02em;color:var(--brand)}
+.h1{font-size:20px;font-weight:700}
+.h2{font-size:17px;font-weight:700}
+.sub{font-size:12px;color:var(--muted)}
+.tiny{font-size:11px;color:var(--muted)}
+.iconbtn{width:44px;height:44px;border-radius:12px;border:1px solid var(--line);background:var(--surface);display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0;padding:0}
+.iconbtn.plain{border:0;background:transparent}
+.badge-dot{position:absolute;top:5px;right:5px;min-width:18px;height:18px;border-radius:9px;background:var(--hot);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 4px}
+.main{flex:1;overflow-y:auto;padding:12px 16px 16px;display:flex;flex-direction:column;gap:10px;-webkit-overflow-scrolling:touch}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px}
+.pad{padding:14px}
+.row{display:flex;align-items:center;gap:12px}
+.col{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
+.b{font-weight:700}.sb{font-weight:600}
+.search{display:flex;align-items:center;gap:10px;height:46px;padding:0 14px;border-radius:12px;background:var(--bg);border:1px solid var(--line)}
+.search input{flex:1;border:0;background:transparent;font-size:15px;outline:none;min-width:0}
+.chips{display:flex;gap:8px;overflow-x:auto;margin:0 -16px;padding:0 16px 2px;scrollbar-width:none}
+.chip{flex-shrink:0;height:36px;padding:0 13px;border-radius:18px;font-size:13px;font-weight:600;white-space:nowrap;background:var(--surface);border:1px solid #D1D5DB}
+.chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.chip.brand.on{background:var(--brand);border-color:var(--brand)}
+.prod{display:flex;gap:12px;padding:12px;align-items:center;width:100%;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:14px}
+.thumb{width:48px;height:48px;border-radius:10px;background:var(--brand-soft);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sec{display:flex;justify-content:space-between;align-items:baseline;padding-top:4px}
+.sec .t{font-size:14px;font-weight:700}
+.btn{height:50px;border-radius:14px;border:0;background:var(--brand);color:#fff;font-size:15px;font-weight:600;padding:0 20px;display:flex;align-items:center;justify-content:center;gap:6px}
+.btn.ghost{background:var(--surface);color:var(--brand);border:1px solid var(--brand)}
+.btn.danger{background:var(--surface);color:#B91C1C;border:1px solid #FCA5A5}
+.btn.sm{height:40px;border-radius:10px;font-size:14px;padding:0 14px}
+.btn[disabled]{opacity:.45}
+.step{display:flex;align-items:center;gap:2px;flex-shrink:0}
+.step button{width:42px;height:42px;border-radius:10px;border:1px solid var(--line);background:var(--surface);font-size:19px;padding:0}
+.step span{width:30px;text-align:center;font-size:15px;font-weight:700;font-variant-numeric:tabular-nums}
+.line{display:flex;align-items:center;gap:10px;padding:6px 6px 6px 12px;border-radius:12px;background:var(--surface);border:1px solid var(--line)}
+.line.sel{border:2px solid var(--brand);padding:5px 5px 5px 11px}
+.tag{align-self:flex-start;margin-top:3px;font-size:11px;font-weight:600;padding:2px 7px;border-radius:6px;background:var(--warn-bg);color:var(--warn)}
+.pill{font-size:11px;font-weight:700;padding:4px 8px;border-radius:6px;white-space:nowrap}
+.p-placed{background:#F3F4F6;color:#374151}.p-proc{background:var(--warn-bg);color:var(--warn)}.p-ship{background:var(--ok-bg);color:var(--ok)}.p-part{background:var(--ok-bg);color:var(--ok)}.p-can{background:var(--bad-bg);color:var(--bad)}.p-closed{background:#F3F4F6;color:#4B5563}
+.bar{height:8px;border-radius:4px;background:var(--line);overflow:hidden}.bar i{display:block;height:100%;background:var(--brand)}
+.dias{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.dia{position:relative;height:42px;border-radius:10px;font-size:15px;font-weight:600;background:var(--surface);border:1px solid #D1D5DB}
+.dia.on{background:var(--brand);color:#fff;border-color:var(--brand)}
+.dia em{position:absolute;top:-6px;right:-6px;min-width:20px;height:20px;padding:0 5px;border-radius:10px;background:var(--hot);color:#fff;font-size:11px;font-weight:700;font-style:normal;display:flex;align-items:center;justify-content:center}
+.foot{background:var(--surface);border-top:1px solid var(--line);padding:12px 16px;display:flex;align-items:center;gap:12px;flex-shrink:0}
+.nav{height:68px;background:var(--surface);border-top:1px solid var(--line);display:flex;justify-content:space-around;align-items:center;flex-shrink:0;padding-bottom:env(safe-area-inset-bottom,0px)}
+.nav button{border:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:12px;font-weight:500;color:var(--muted);min-width:72px;padding:6px 0}
+.nav button.on{color:var(--brand);font-weight:600}
+.cartbar{position:absolute;left:16px;right:16px;bottom:80px;height:54px;border-radius:14px;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 18px;border:0;font-size:15px;font-weight:600;box-shadow:0 8px 20px rgba(15,76,154,.25);z-index:4}
+.toast{position:absolute;left:16px;right:16px;bottom:150px;background:var(--ink);color:#fff;padding:12px 14px;border-radius:12px;font-size:14px;font-weight:600;z-index:9;box-shadow:0 10px 30px rgba(0,0,0,.2)}
+.tl{list-style:none;margin:0;padding:0}
+.tl li{display:flex;gap:12px}
+.tl .dot{width:14px;height:14px;border-radius:7px;background:var(--brand);margin-top:3px;flex-shrink:0}
+.tl .dot.todo{background:var(--surface);border:2px solid #D1D5DB}
+.tl .ln{width:2px;flex:1;min-height:12px;background:var(--brand);margin:0 auto}
+.tl .ln.todo{background:var(--line)}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:#F3F4F6;border-radius:10px;padding:4px}
+.seg button{height:40px;border:0;border-radius:8px;font-size:13px;font-weight:600;background:transparent;color:var(--muted)}
+.seg button.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.it{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 2px;border-top:1px solid var(--line2)}
+.note{display:flex;gap:10px;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:13px;color:var(--muted);line-height:1.5}
+.field{height:50px;border:1px solid #D1D5DB;border-radius:12px;padding:0 14px;font-size:16px;background:var(--surface);width:100%}
+.otp{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
+.otp input{height:54px;text-align:center;border:1px solid #D1D5DB;border-radius:12px;font-size:22px;font-weight:700;min-width:0;width:100%;background:var(--surface)}
+.err{font-size:13px;color:#B91C1C;line-height:1.45}
+.menu a,.menu button{display:flex;align-items:center;gap:12px;padding:0 16px;min-height:54px;width:100%;border:0;border-top:1px solid var(--line2);background:transparent;text-align:left;font-size:15px;font-weight:500}
+.menu>:first-child{border-top:0}
+.notif{display:flex;gap:12px;align-items:flex-start;padding:12px 16px;border:0;border-bottom:1px solid var(--line2);background:var(--surface);width:100%;text-align:left}
+.notif.unread{background:#EEF4FB}
+.ic{width:36px;height:36px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;background:var(--brand-soft);color:var(--brand)}
+.ic.news{background:var(--warn-bg);color:var(--warn)}
+.toggle{width:48px;height:28px;border-radius:14px;border:0;padding:3px;display:inline-flex;flex-shrink:0;background:#9CA3AF;justify-content:flex-start}
+.toggle.on{background:var(--brand);justify-content:flex-end}
+.toggle i{width:22px;height:22px;border-radius:11px;background:#fff;display:block}
+dl.kv{margin:0;display:grid;grid-template-columns:auto 1fr;gap:8px 14px;font-size:13px}
+dl.kv dt{color:var(--muted)}dl.kv dd{margin:0;font-weight:600;overflow-wrap:anywhere}
+.shdr{background:#111827;color:#fff;padding:12px 16px;display:flex;flex-direction:column;gap:6px;flex-shrink:0}
+.shdr .sub{color:#D1D5DB}
+.sbadge{font-size:12px;font-weight:600;padding:3px 8px;border-radius:6px;background:#374151;color:#E5E7EB}
+.sbtn{height:38px;padding:0 12px;border-radius:10px;border:1px solid #4B5563;background:transparent;color:#fff;font-size:13px;font-weight:600}
+.vbar{background:#111827;color:#fff;padding:9px 10px 9px 14px;display:flex;align-items:center;gap:10px;flex-shrink:0;font-size:13px;line-height:1.35}
+.vbar button{height:34px;padding:0 14px;border-radius:8px;border:0;background:#fff;color:#111827;font-weight:700;font-size:13px;flex-shrink:0}
+.sheet{position:absolute;inset:0;background:rgba(17,24,39,.45);display:flex;flex-direction:column;justify-content:flex-end;z-index:8}
+.sheet>div{background:var(--surface);border-radius:20px 20px 0 0;padding:10px 18px 22px;display:flex;flex-direction:column;gap:12px;max-height:86%;overflow-y:auto}
+.srow{display:flex;align-items:center;gap:12px;padding:10px 14px;min-height:62px;width:100%;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:14px}
+.demo{font-size:11px;font-weight:600;color:var(--warn);background:var(--warn-bg);padding:6px 10px;border-radius:8px;line-height:1.4}
+.empty{background:var(--surface);border:1px dashed #D1D5DB;border-radius:14px;padding:24px 16px;text-align:center;color:var(--muted);line-height:1.5}
+.loading{flex:1;display:flex;align-items:center;justify-content:center;color:var(--muted)}
+@media (prefers-reduced-motion:no-preference){.toast{animation:up .2s ease-out}@keyframes up{from{transform:translateY(8px);opacity:0}}}
+</style>
+
+<div id="app"><div class="loading">Loading Relisys data…</div></div>
+
+<script>
+(function(){
+'use strict';
+var D=null, S={}, app=document.getElementById('app');
+var I={
+  grid:'<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
+  star:'<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/>',
+  list:'<path d="M9 5H5v16h14V5h-4"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/>',
+  user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
+  users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M21.5 20a6.5 6.5 0 0 0-4-6"/>',
+  eye:'<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+  shield:'<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/>',
+  lock:'<rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
+  bell:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
+  back:'<path d="m15 18-6-6 6-6"/>', next:'<path d="m9 18 6-6-6-6"/>',
+  search:'<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
+  help:'<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 4.9.8c0 1.7-2.4 2.2-2.4 3.7M12 17h.01"/>',
+  info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>',
+  stent:'<rect x="3" y="9" width="18" height="6" rx="3"/><path d="M7 9l2 6M11 9l2 6M15 9l2 6"/>'
+};
+function ic(n,sz,col,fill){return '<svg width="'+(sz||22)+'" height="'+(sz||22)+'" viewBox="0 0 24 24" fill="'+(fill||'none')+'" stroke="'+(col||'currentColor')+'" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+I[n]+'</svg>';}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function fd(s){if(!s)return '';var p=s.split('-');return (+p[2])+' '+MON[+p[1]-1]+' '+p[0];}
+function today(){return D.asOf;}
+function store(k,v){try{if(v===undefined){var x=localStorage.getItem('rel_'+k);return x?JSON.parse(x):null;}localStorage.setItem('rel_'+k,JSON.stringify(v));}catch(e){return null;}}
+
+// ---------- data prep ----------
+var ITEM={}, GROUP={}, SIZE_RE=/^(.*?)\s*(\d+(?:\.\d+)?)\s*[xX×]\s*(\d+(?:\.\d+)?)\s*(?:mm)?\s*$/;
+function prep(){
+  D.groups.forEach(function(g){
+    GROUP[g.id]=g; var ok=0;
+    g.items.forEach(function(it){
+      var m=SIZE_RE.exec(it[1]), o={code:it[0],name:it[1],g:g.id};
+      if(m){o.d=(+m[2]).toFixed(2);o.l=+m[3];ok++;}
+      ITEM[it[0]]=o;
+    });
+    g.sized=g.items.length>0&&ok/g.items.length>=0.8;
+    if(g.sized){var dm={};g.items.forEach(function(it){var o=ITEM[it[0]];if(o.d){(dm[o.d]=dm[o.d]||[]).push(o);}});
+      g.dias=Object.keys(dm).sort(function(a,b){return a-b;});g.byDia=dm;g.dias.forEach(function(d){dm[d].sort(function(a,b){return a.l-b.l;});});}
+  });
+}
+function iname(code){var o=ITEM[code];if(!o)return code;var g=GROUP[o.g];if(o.d)return g.product+' '+o.d+' × '+o.l+' mm';return o.name;}
+
+// ---------- order status (dates only, no UDF) ----------
+function shippedMap(o){var m={};if(!o.app&&!(o.dcs||[]).length){o.lines.forEach(function(l){var s=l[1]-l[2];if(s>0)m[l[0]]=(m[l[0]]||0)+s;});return m;}(o.dcs||[]).forEach(function(dc){(dc[2]||[]).forEach(function(l){m[l[0]]=(m[l[0]]||0)+l[1];});});return m;}
+function ostat(o){
+  if(o.cancelled||o.can==='Y')return {k:'can',t:'Cancelled'};
+  var tot=0,sh=0,m=shippedMap(o);
+  o.lines.forEach(function(l){tot+=l[1];sh+=Math.min(l[1],m[l[0]]||0);});
+  o._tot=tot;o._sh=sh;
+  if(tot>0&&sh>=tot)return {k:'ship',t:'Shipped'};
+  if(sh>0)return o.st==='C'?{k:'ship',t:'Shipped'}:{k:'part',t:'Partly shipped'};
+  if((o.inv||[]).length&&o.st==='C')return {k:'ship',t:'Shipped'};
+  if(o.st==='C')return {k:'closed',t:'Closed'};
+  if(o.due&&o.due!==o.d)return {k:'proc',t:'Under process'};
+  return {k:'placed',t:'Placed'};
+}
+function myOrders(){
+  var c=S.cust.code, can=S.cancelled||{};
+  var list=D.orders.filter(function(o){return o.c===c;}).map(function(o){o.cancelled=!!can[o.n];return o;});
+  var app=(S.appOrders||[]).filter(function(o){return o.c===c;}).map(function(o){o.cancelled=!!can[o.n];return o;});
+  return app.concat(list).sort(function(a,b){return a.d<b.d?1:a.d>b.d?-1:(String(b.n)>String(a.n)?1:-1);});
+}
+function pendingMap(){var m={};myOrders().forEach(function(o){var s=ostat(o);if(s.k==='can'||s.k==='closed'||s.k==='ship')return;var sh=shippedMap(o);o.lines.forEach(function(l){var open=o.app?l[1]:l[2];if(open>0)m[l[0]]=(m[l[0]]||0)+open;});});return m;}
+
+// ---------- product visibility set by Relisys staff ----------
+function hiddenG(code){return S.hide[code||(S.cust&&S.cust.code)]||{};}
+function visG(g){return g&&!hiddenG()[g.id];}
+function visItem(code){var o=ITEM[code];return !!o&&visG(GROUP[o.g]);}
+function visGroups(){return D.groups.filter(visG);}
+
+// ---------- state ----------
+function save(){store('state',{cust:S.cust&&S.cust.code,cart:S.cart,ship:S.ship,appOrders:S.appOrders,cancelled:S.cancelled,saved:S.saved,read:S.read,sms:S.sms,staff:S.staff,view:S.view,hide:S.hide,blocked:S.blocked,access:S.access});}
+function load(){var x=store('state')||{};S={screen:'login',cart:x.cart||{},ship:x.ship||0,appOrders:x.appOrders||[],cancelled:x.cancelled||{},saved:x.saved||{},read:x.read||{},sms:x.sms!==false,ofilter:'all',otab:'pending',ftab:'freq',ntab:'all',q:'',hdr:{}};
+  S.staff=x.staff||null;S.view=x.view||null;S.hide=x.hide||{};S.blocked=x.blocked||{};S.access=x.access||{};S.sf='all';S.vf='all';S.sq='';
+  if(x.cust){S.cust=D.customers.find(function(c){return c.code===x.cust;});if(S.cust)S.screen='home';}
+  if(S.staff&&!S.view){S.cust=null;S.screen='shome';}}
+function go(scr,extra){var keep=S.screen;S.prev=keep;S.screen=scr;if(extra)for(var k in extra)S[k]=extra[k];S.scrollTop=0;render();}
+var toastT;function toast(t){S.toast=t;render();clearTimeout(toastT);toastT=setTimeout(function(){S.toast='';render();},2600);}
+function cartCount(){var n=0,u=0;for(var k in S.cart){if(S.cart[k]>0){n++;u+=S.cart[k];}}return {n:n,u:u};}
+function setQty(code,v){S.cart[code]=Math.max(0,v);if(!S.cart[code])delete S.cart[code];save();render();}
+
+// ---------- shared pieces ----------
+function nav(on){var T=[['home','Products','grid'],['freq','Frequent items','star'],['orders','My orders','list'],['account','Account','user']];
+  return '<nav class="nav">'+T.map(function(t){return '<button data-go="'+t[0]+'" class="'+(on===t[0]?'on':'')+'"'+(on===t[0]?' aria-current="page"':'')+'>'+ic(t[2])+t[1]+'</button>';}).join('')+'</nav>';}
+function backHdr(title,sub,right){return '<header class="hdr" style="padding:8px 12px"><div class="hdr-row"><button class="iconbtn plain" data-act="back" aria-label="Back">'+ic('back')+'</button><div class="col"><span class="h2">'+esc(title)+'</span>'+(sub?'<span class="sub">'+esc(sub)+'</span>':'')+'</div>'+(right||'')+'</div></header>';}
+function stepper(code,q,usual){return '<div class="step"><button data-dec="'+esc(code)+'" aria-label="Decrease quantity">−</button><span>'+q+'</span><button data-inc="'+esc(code)+'"'+(usual?' data-usual="'+usual+'"':'')+' aria-label="Increase quantity">+</button></div>';}
+function cartBar(){var c=cartCount();if(!c.n||S.view)return '';return '<button class="cartbar" data-go="cart"><span>'+c.n+' sizes · '+c.u+' units in cart</span><span style="display:flex;align-items:center;gap:6px">View cart '+ic('next',18,'#fff')+'</span></button>';}
+function pill(s){return '<span class="pill p-'+s.k+'">'+s.t+'</span>';}
+
+// ---------- notifications ----------
+function notes(){
+  var out=[], c=S.cust;
+  myOrders().forEach(function(o){
+    var s=ostat(o);
+    if(o.app)out.push({id:'a'+o.n,d:o.d,kind:'order',t:'Order received',s:'Your order of '+o.lines.length+' size'+(o.lines.length===1?'':'s')+' · '+o._tot+' units has been placed with Relisys.',o:o.n});
+    (o.dcs||[]).forEach(function(dc,i){var q=0;(dc[2]||[]).forEach(function(l){q+=l[1];});var last=i===o.dcs.length-1&&s.t==='Shipped';
+      out.push({id:'dc'+dc[0],d:dc[1],kind:'order',t:'Order '+o.n+(last?' shipped in full':' partly shipped'),s:'DC '+dc[0]+' · '+q+' units shipped'+(last?'.':'. '+(o._tot-o._sh)+' still to ship.'),o:o.n});});
+    if(!o.app&&!(o.dcs||[]).length&&o._sh>0&&s.k!=='can')out.push({id:'sh'+o.n,d:o.due&&o.due<=today()?o.due:o.d,kind:'order',t:'Order '+o.n+(s.t==='Shipped'?' shipped':' partly shipped'),s:o._sh+' of '+o._tot+' units shipped.'+(s.t==='Shipped'?'':' '+(o._tot-o._sh)+' still to ship.'),o:o.n});
+    if(s.k==='proc')out.push({id:'up'+o.n,d:o.d,kind:'order',t:'Order '+o.n+' is under process',s:'Relisys set the delivery date to '+fd(o.due)+'.',o:o.n});
+    if(o.can==='Y')out.push({id:'cn'+o.n,d:o.d,kind:'order',t:'Order '+o.n+' was cancelled',s:'Cancelled in SAP by Relisys.',o:o.n});
+  });
+  out.sort(function(a,b){return a.d<b.d?1:a.d>b.d?-1:0;});
+  out=out.slice(0,25);
+  out.push({id:'welcome',d:'',kind:'news',t:'Welcome to the Relisys Order portal',s:'Place orders any time and follow them until they ship.'});
+  var t=today(), lim=new Date(t);lim.setDate(lim.getDate()-4);var ls=lim.toISOString().slice(0,10);
+  out.forEach(function(n){n.unread=!S.read[n.id]&&(n.d>=ls||n.id.charAt(0)==='a'||n.id==='welcome');});
+  return out;
+}
+
+// ---------- screens ----------
+var V={};
+V.login=function(){
+  var step=S.lstep||'mobile';
+  var picks=(D.demoPicks||[]).map(function(code){var c=D.customers.find(function(x){return x.code===code;});return c?'<option value="'+c.code+'">'+esc(c.name)+' ('+c.code+')</option>':'';}).join('');
+  var h='<div class="main" style="padding:56px 24px 24px;gap:16px;background:var(--surface)"><div class="col" style="flex:none;gap:8px;margin-bottom:16px"><span class="brand" style="font-size:32px;letter-spacing:-.03em">Relisys</span><span class="h1" style="font-size:22px">Order portal</span><span style="font-size:15px;color:var(--muted);line-height:1.5">Sign in with your registered mobile number. We’ll send you a one-time code.</span></div>';
+  if(step==='mobile'){
+    h+='<label for="mob" class="sb">Mobile number</label><div style="display:flex;gap:8px"><span class="field" style="width:auto;display:flex;align-items:center;color:var(--muted)">+91</span><input id="mob" class="field" type="tel" inputmode="numeric" maxlength="10" placeholder="10-digit mobile number" value="'+esc(S.mob||'')+'"></div>'+(S.lerr?'<div class="err">'+esc(S.lerr)+'</div>':'')+'<button class="btn" data-act="sendotp">Send code</button>';
+    if(picks)h+='<div class="note" style="flex-direction:column;gap:8px;margin-top:8px"><span class="sb" style="color:var(--ink)">Demo: sign in as a customer</span><span>No SMS is sent in this demo. Pick a customer from SAP to sign in with their Mobile Phone.</span><select id="pick" class="field" style="font-size:14px">'+picks+'</select><button class="btn ghost sm" data-act="pick">Use this customer</button></div>';
+  }else{
+    h+='<div class="col" style="flex:none"><span class="sb">Enter the 6-digit code</span><span class="sub">Sent by SMS to +91 ••••• •••'+esc((S.mob||'').slice(-2))+'</span></div><div class="otp">'+[1,2,3,4,5,6].map(function(n){return '<input aria-label="Digit '+n+'" maxlength="1" inputmode="numeric" data-otp="'+n+'">';}).join('')+'</div><div class="demo">Demo: type any 6 digits.</div>'+(S.lerr?'<div class="err">'+esc(S.lerr)+'</div>':'')+'<button class="btn" data-act="verify">Verify &amp; sign in</button><button class="btn ghost sm" data-act="chgno" style="align-self:flex-start;border:0;padding:0">Change number</button>';
+  }
+  h+='<div style="flex:1"></div><div class="note">'+ic('info',18,'#4B5563')+'<span>Use the mobile number Relisys has on file for your company. To add or change it, contact your Relisys sales representative.</span></div><button class="btn ghost sm" data-go="slogin" style="border:0;align-self:center">'+ic('lock',16)+'Relisys staff? Sign in with SAP</button></div>';
+  return h;
+};
+V.home=function(){
+  var c=S.cust, ns=notes().filter(function(n){return n.unread;}).length, q=S.q.trim();
+  var h='<header class="hdr"><div class="hdr-row" style="justify-content:space-between"><span class="brand">Relisys</span><button class="iconbtn" data-go="notif" aria-label="Notifications, '+ns+' new">'+ic('bell',20)+(ns?'<span class="badge-dot">'+ns+'</span>':'')+'</button></div><div class="col"><span class="sub sb">Ordering for · '+esc(c.code)+'</span><span style="font-size:16px;font-weight:700">'+esc(c.name)+'</span></div><label class="search"><span class="sr" style="display:none">Search</span>'+ic('search',18,'#4B5563')+'<input id="q" type="search" placeholder="Search size, item code or product" value="'+esc(S.q)+'" autocomplete="off"></label></header>';
+  h+='<main class="main" id="homelist" style="padding-bottom:'+(cartCount().n?'84px':'16px')+'">'+homeList()+'</main>';
+  return h+cartBar()+nav('home');
+};
+function normq(s){return s.toLowerCase().replace(/\s+/g,'').replace(/×/g,'x');}
+function homeList(){
+  var q=normq(S.q||'');
+  if(q.length>=2){
+    var res=[];for(var k in ITEM){var o=ITEM[k],g=GROUP[o.g];if(!visG(g))continue;var hay=normq(o.code+' '+o.name+' '+g.product+' '+(o.d?o.d+'x'+o.l:''));if(hay.indexOf(q)>=0){res.push(o);if(res.length>=40)break;}}
+    var h='<span class="sub sb">'+(res.length>=40?'First 40 matches':res.length+' match'+(res.length===1?'':'es'))+' for “'+esc(S.q)+'”</span>';
+    h+=res.map(function(o){var n=S.cart[o.code]||0;return '<div class="line'+(n?' sel':'')+'"><div class="col"><span class="sb" style="font-size:15px">'+esc(iname(o.code))+'</span><span class="tiny">'+esc(o.code)+'</span></div>'+stepper(o.code,n)+'</div>';}).join('');
+    if(!res.length)h+='<div class="empty">No products match. Try a size like 3.00x15, an item code or a product name.</div>';
+    return h+'<span class="tiny" style="line-height:1.45">Search works with sizes (3.00x15), item codes or product names.</span>';
+  }
+  var h='', mine=myOrders().filter(function(o){return !o.app;});
+  var last=mine[0];
+  if(last){ostat(last);h+='<div class="card pad row"><div class="col"><span class="sub sb">Last order · '+fd(last.d)+'</span><span class="b" style="font-size:15px">Order '+esc(last.n)+' · '+last.lines.length+' sizes · '+last._tot+' units</span></div><button class="btn ghost sm" data-reorder="'+esc(last.n)+'">Reorder</button></div>';}
+  // groups this customer ordered from first
+  var used={};mine.forEach(function(o){o.lines.forEach(function(l){var it=ITEM[l[0]];if(it)used[it.g]=(used[it.g]||0)+l[1];});});
+  ((D.freq||{})[S.cust.code]||[]).forEach(function(f){var it=ITEM[f[0]];if(it)used[it.g]=(used[it.g]||0)+f[2];});
+  var yours=Object.keys(used).sort(function(a,b){return used[b]-used[a];}).map(function(id){return GROUP[id];}).filter(visG);
+  var kind=S.gkind||'FG';
+  var VG=visGroups(), fgN=VG.filter(function(g){return g.kind==='FG';}).length, oemN=VG.length-fgN, vItems=0;VG.forEach(function(g){vItems+=g.items.length;});
+  if(!oemN)kind='FG';
+  if(yours.length){h+='<div class="sec"><span class="t">Your products</span><span class="tiny">From your orders</span></div>'+yours.slice(0,4).map(prodRow).join('');}
+  h+='<div class="sec"><span class="t">All products</span><span class="tiny">'+VG.length+' groups · '+vItems.toLocaleString('en-IN')+' items</span></div>';
+  h+='<div class="chips" role="group" aria-label="Product type"><button class="chip'+(kind==='FG'?' on':'')+'" data-gkind="FG">Relisys products · '+fgN+'</button>'+(oemN?'<button class="chip'+(kind==='OEM'?' on':'')+'" data-gkind="OEM">OEM · '+oemN+'</button>':'')+'</div>';
+  h+=VG.filter(function(g){return g.kind===kind;}).map(prodRow).join('');
+  return h;
+}
+function prodRow(g){var sub;if(g.sized){var ls=[];g.dias.forEach(function(d){g.byDia[d].forEach(function(o){ls.push(o.l);});});sub='Ø '+g.dias[0]+'–'+g.dias[g.dias.length-1]+' mm · L '+Math.min.apply(null,ls)+'–'+Math.max.apply(null,ls)+' mm · '+g.items.length+' sizes';}else sub=g.items.length+' items';
+  return '<button class="prod" data-group="'+g.id+'"><span class="thumb">'+ic('stent',26,'#4A5D78')+'</span><span class="col"><span class="b" style="font-size:15px">'+esc(g.product)+'</span><span class="sub">'+esc(sub)+'</span><span class="tiny">'+esc(g.name)+'</span></span>'+ic('next',20,'#4B5563')+'</button>';}
+V.product=function(){
+  var g=GROUP[S.gid], pend=pendingMap(), h=backHdr(g.product,g.items.length+' sizes · '+g.name), rows;
+  if(g.sized){
+    if(!S.dia||g.dias.indexOf(S.dia)<0)S.dia=g.dias[0];
+    h+='<section style="background:var(--surface);padding:12px 16px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:10px;flex-shrink:0"><span class="sub sb">1 · Diameter (mm)</span><div class="dias">'+g.dias.map(function(d){var n=0;g.byDia[d].forEach(function(o){n+=S.cart[o.code]||0;});return '<button class="dia'+(d===S.dia?' on':'')+'" data-dia="'+d+'">'+d+(n?'<em>'+n+'</em>':'')+'</button>';}).join('')+'</div></section>';
+    rows=g.byDia[S.dia];
+    h+='<main class="main" style="gap:8px"><span class="sub sb">2 · Length &amp; quantity for Ø '+S.dia+' mm</span>';
+  }else{rows=g.items.map(function(it){return ITEM[it[0]];});h+='<main class="main" style="gap:8px"><span class="sub sb">Choose quantities</span>';}
+  h+=rows.map(function(o){var n=S.cart[o.code]||0,p=pend[o.code];return '<div class="line'+(n?' sel':'')+'"><div class="col"><span class="sb" style="font-size:15px">'+esc(o.d?o.d+' × '+o.l+' mm':o.name)+'</span><span class="tiny">'+esc(o.code)+'</span>'+(p?'<span class="tag">'+p+' already pending on open orders</span>':'')+'</div>'+stepper(o.code,n)+'</div>';}).join('');
+  h+='</main>';
+  var c=cartCount();
+  h+='<div class="foot"><div class="col"><span class="sub">'+c.n+' sizes in cart</span><span class="b" style="font-size:17px">'+c.u+' units</span></div><button class="btn" data-go="cart"'+(c.n?'':' disabled')+'>View cart</button></div>';
+  return h;
+};
+V.cart=function(){
+  var c=S.cust, cc=cartCount(), h=backHdr('Cart',cc.n+' sizes · '+cc.u+' units');
+  h+='<main class="main">';
+  if(!cc.n){h+='<div class="empty">Your cart is empty. Add sizes from Products or Frequent items.</div>';}
+  else{
+    var by={};Object.keys(S.cart).forEach(function(code){var o=ITEM[code];var gid=o?o.g:'x';(by[gid]=by[gid]||[]).push(code);});
+    Object.keys(by).forEach(function(gid){var g=GROUP[gid];h+='<div class="card" style="padding:4px 12px 8px"><div class="row" style="padding:10px 2px 6px"><span class="b" style="flex:1">'+esc(g?g.product:'Other')+'</span><span class="tiny">'+by[gid].length+' sizes</span></div>'+by[gid].map(function(code){var o=ITEM[code];return '<div class="it"><div class="col"><span class="sb">'+esc(o&&o.d?o.d+' × '+o.l+' mm':(o?o.name:code))+'</span><span class="tiny">'+esc(code)+'</span></div>'+stepper(code,S.cart[code])+'</div>';}).join('')+'</div>';});
+    h+='<div class="card pad" style="display:flex;flex-direction:column;gap:8px"><label for="ship" class="b">Ship to</label><select id="ship" class="field" style="font-size:14px">'+c.shipTo.map(function(a,i){return '<option value="'+i+'"'+(i===+S.ship?' selected':'')+'>'+esc(a[0])+' · '+esc(a[1]||'')+(a[2]?', '+esc(a[2]):'')+'</option>';}).join('')+'</select><span class="tiny">'+c.shipTo.length+' ship-to addresses from SAP</span></div>';
+    h+='<div class="note">'+ic('info',18,'#4B5563')+'<span>Orders are placed without prices. Relisys applies your agreed prices on the invoice.</span></div>';
+  }
+  h+='</main>';
+  if(cc.n)h+='<div class="foot"><div class="col"><span class="sub">'+cc.n+' sizes</span><span class="b" style="font-size:17px">'+cc.u+' units</span></div><button class="btn" data-act="place">Place order</button></div>';
+  return h;
+};
+V.orders=function(){
+  var all=myOrders(), f=S.ofilter;
+  all.forEach(function(o){o._s=ostat(o);});
+  var F=[['all','All'],['Placed','Placed'],['Under process','Under process'],['Partly shipped','Partly shipped'],['Shipped','Shipped']];
+  var h='<header class="hdr"><span class="h1">My orders</span><span class="sub">'+esc(S.cust.name)+' · '+esc(S.cust.code)+' · last 90 days</span><div class="chips" role="group" aria-label="Filter by status">'+F.map(function(x){var n=x[0]==='all'?all.length:all.filter(function(o){return o._s.t===x[0];}).length;return '<button class="chip brand'+(f===x[0]?' on':'')+'" data-of="'+x[0]+'" aria-pressed="'+(f===x[0])+'">'+x[1]+' · '+n+'</button>';}).join('')+'</div></header><main class="main">';
+  var list=f==='all'?all:all.filter(function(o){return o._s.t===f;});
+  if(!list.length)h+='<div class="empty">No orders here.</div>';
+  h+=list.map(function(o){var s=o._s,pct=o._tot?Math.round(o._sh/o._tot*100):0;
+    var note=s.k==='can'?'Cancelled · nothing was shipped':s.k==='placed'?'Waiting for Relisys to set the delivery date':s.k==='proc'?'Delivery date '+fd(o.due):s.k==='closed'?'Closed by Relisys':o._sh+' of '+o._tot+' units shipped'+(o.due?' · delivery date '+fd(o.due):'');
+    var x='<div><button class="card pad" data-order="'+esc(o.n)+'" style="width:100%;text-align:left;display:flex;flex-direction:column;gap:10px"><div class="row" style="align-items:flex-start;width:100%"><div class="col"><span class="b" style="font-size:15px">Order '+esc(o.n)+'</span><span class="sub">Placed '+fd(o.d)+' · '+o.lines.length+' sizes'+(o.app?' · from app':'')+'</span></div>'+pill(s)+'</div><div class="bar" style="width:100%"><i style="width:'+pct+'%"></i></div><span class="sub">'+note+'</span></button>';
+    if(s.k==='placed')x+='<div class="row" style="padding:6px 4px 0;justify-content:space-between"><span class="sub">You can cancel until Relisys sets the delivery date.</span><button class="btn danger sm" data-cancel="'+esc(o.n)+'" style="flex-shrink:0">Cancel order</button></div>';
+    return x+'</div>';}).join('');
+  return h+'</main>'+nav('orders');
+};
+V.order=function(){
+  var o=myOrders().find(function(x){return String(x.n)===String(S.oid);});if(!o){S.screen='orders';return V.orders();}
+  var s=ostat(o), sh=shippedMap(o), pct=o._tot?Math.round(o._sh/o._tot*100):0;
+  var h=backHdr('Order '+o.n,'Placed '+fd(o.d)+' · '+o.lines.length+' sizes');
+  h+='<main class="main"><section class="card pad" style="display:flex;flex-direction:column;gap:12px"><div class="row" style="justify-content:space-between">'+pill(s)+'<span class="sub">'+o._sh+' of '+o._tot+' units shipped</span></div><div class="bar" style="height:10px"><i style="width:'+pct+'%"></i></div>';
+  var st=[['Placed',(o.app?'App order ':'Sales Order ')+o.n+' · '+fd(o.d),1]];
+  if(s.k==='can')st.push(['Cancelled',o.app?'Cancelled by you':'Cancelled in SAP',1]);
+  else{
+    var proc=o.due&&o.due!==o.d;st.push(['Under process',proc?'Relisys set delivery date '+fd(o.due):'Waiting for a delivery date',proc?1:0]);
+    (o.dcs||[]).forEach(function(dc){var q=0;(dc[2]||[]).forEach(function(l){q+=l[1];});st.push(['Shipped · DC '+dc[0],fd(dc[1])+' · '+q+' units',1]);});
+    (o.inv||[]).forEach(function(v){st.push(['Invoice '+v[0],fd(v[1]),1]);});
+    if(!o.app&&!(o.dcs||[]).length&&o._sh>0)st.push(['Shipped',o._sh+' units on delivery challans',1]);
+    var left=o._tot-o._sh;if(left>0&&s.k!=='closed'&&!(s.k==='ship'))st.push([left+' units still to ship',o.lines.filter(function(l){return (sh[l[0]]||0)<l[1];}).length+' sizes pending',0]);
+    if(s.k==='closed'||(s.k==='ship'&&left>0))st.push(['Closed',left>0?left+' units will not be shipped':'Closed by Relisys',1]);
+  }
+  h+='<ol class="tl">'+st.map(function(x,i){var nx=st[i+1];return '<li><div style="display:flex;flex-direction:column;align-items:center;width:20px"><span class="dot'+(x[2]?'':' todo')+'"></span>'+(nx?'<span class="ln'+(nx[2]?'':' todo')+'"></span>':'')+'</div><div class="col" style="padding-bottom:14px"><span class="sb">'+esc(x[0])+'</span><span class="sub">'+esc(x[1])+'</span></div></li>';}).join('')+'</ol>';
+  h+='<button class="btn ghost" data-reorder="'+esc(o.n)+'">Reorder these '+o.lines.length+' sizes</button></section>';
+  var pend=o.lines.filter(function(l){return (sh[l[0]]||0)<l[1];}), shp=o.lines.filter(function(l){return sh[l[0]];});
+  var pu=0;pend.forEach(function(l){pu+=l[1]-(sh[l[0]]||0);});
+  var isP=S.otab==='pending';
+  h+='<section class="card" style="padding:12px 14px 8px;display:flex;flex-direction:column;gap:6px"><div class="seg" role="tablist"><button role="tab" class="'+(isP?'on':'')+'" aria-selected="'+isP+'" data-otab="pending">Pending ('+pend.length+' · '+pu+')</button><button role="tab" class="'+(!isP?'on':'')+'" aria-selected="'+!isP+'" data-otab="shipped">Shipped ('+shp.length+' · '+o._sh+')</button></div>';
+  if(isP){h+='<span class="sub" style="padding:6px 2px 2px">'+(s.k==='closed'||s.k==='can'||s.k==='ship'?'These were not shipped.':'Not shipped yet.'+(o.due&&o.due!==o.d?' Expected by '+fd(o.due)+'.':''))+'</span>';
+    h+=pend.map(function(l){return '<div class="it"><div class="col"><span class="sb">'+esc(iname(l[0]))+'</span><span class="tiny">'+esc(l[0])+'</span></div><span class="b" style="color:var(--warn);white-space:nowrap;font-size:13px">'+(l[1]-(sh[l[0]]||0))+' to ship</span></div>';}).join('')||'<span class="sub" style="padding:8px 2px">Nothing pending.</span>';}
+  else{var dcBy={};(o.dcs||[]).forEach(function(dc){(dc[2]||[]).forEach(function(x){(dcBy[x[0]]=dcBy[x[0]]||[]).push(dc[0]+(dc.length>1?' ('+x[1]+')':''));});});
+    h+='<span class="sub" style="padding:6px 2px 2px">'+((o.dcs||[]).length?'Shipped in '+o.dcs.length+' delivery challan'+(o.dcs.length===1?'':'s')+'.':'Shipped on delivery challans.')+'</span>';
+    h+=shp.map(function(l){return '<div class="it"><div class="col"><span class="sb">'+esc(iname(l[0]))+'</span><span class="tiny">'+esc(l[0])+(dcBy[l[0]]?' · DC '+esc(dcBy[l[0]].join(' · ')):'')+'</span></div><span class="b" style="color:var(--ok);white-space:nowrap;font-size:13px">'+Math.min(l[1],sh[l[0]])+' shipped</span></div>';}).join('')||'<span class="sub" style="padding:8px 2px">Nothing shipped yet.</span>';}
+  h+='</section>';
+  if(s.k==='placed')h+='<button class="btn danger" data-cancel="'+esc(o.n)+'">Cancel order</button>';
+  return h+'</main>';
+};
+V.freq=function(){
+  var F=((D.freq||{})[S.cust.code]||[]).filter(function(f){return visItem(f[0]);}), sv=S.saved[S.cust.code]||{};
+  var savedList=Object.keys(sv).filter(function(k){return sv[k]&&visItem(k);});
+  var isF=S.ftab==='freq';
+  var list=isF?F.map(function(f){return {code:f[0],o:f[1],u:Math.max(1,Math.round(f[2]/f[1]))};}):savedList.map(function(code){var f=F.find(function(x){return x[0]===code;});return {code:code,o:f?f[1]:0,u:f?Math.max(1,Math.round(f[2]/f[1])):1};});
+  var h='<header class="hdr"><span class="h1">Frequent items</span><span class="sub">Sizes you order often, ready to add in one tap</span><div class="chips" role="group" aria-label="Show"><button class="chip'+(isF?' on':'')+'" data-ft="freq">Frequently ordered</button><button class="chip'+(!isF?' on':'')+'" data-ft="saved">Saved ('+savedList.length+')</button></div></header><main class="main" style="gap:8px;padding-bottom:'+(cartCount().n?'84px':'16px')+'">';
+  h+='<span class="sub" style="line-height:1.45">'+(isF?'From your recent orders. The first + adds your usual quantity.':'Sizes you starred.')+'</span>';
+  if(!list.length)h+='<div class="empty">'+(isF?'No orders in the last 90 days.':'No saved sizes yet. Tap the star on a size to save it here.')+'</div>';
+  h+=list.map(function(x){var n=S.cart[x.code]||0,on=!!sv[x.code];return '<div class="line'+(n?' sel':'')+'" style="padding-left:2px"><button data-star="'+esc(x.code)+'" aria-pressed="'+on+'" aria-label="'+(on?'Remove from Saved':'Save')+'" style="width:40px;height:40px;border:0;background:transparent;display:flex;align-items:center;justify-content:center;flex-shrink:0;padding:0">'+ic('star',20,on?'#F59E0B':'#9CA3AF',on?'#F59E0B':'none')+'</button><div class="col"><span class="sb" style="font-size:15px">'+esc(iname(x.code))+'</span><span class="tiny">'+esc(x.code)+(x.o?' · in '+x.o+' orders · usually '+x.u:'')+'</span></div>'+stepper(x.code,n,x.u)+'</div>';}).join('');
+  return h+'</main>'+cartBar()+nav('freq');
+};
+V.notif=function(){
+  var N=notes(), f=S.ntab, nu=N.filter(function(n){return n.unread;}).length;
+  var list=N.filter(function(n){return f==='all'||n.kind===f;});
+  var h=backHdr('Notifications','',nu?'<button class="btn ghost sm" data-act="readall" style="border:0">Mark all read</button>':'');
+  h+='<div style="background:var(--surface);padding:10px 16px 12px;border-bottom:1px solid var(--line);flex-shrink:0"><div class="chips" role="group" aria-label="Show"><button class="chip'+(f==='all'?' on':'')+'" data-nt="all">All'+(nu?' · '+nu+' new':'')+'</button><button class="chip'+(f==='order'?' on':'')+'" data-nt="order">Orders</button><button class="chip'+(f==='news'?' on':'')+'" data-nt="news">From Relisys</button></div></div>';
+  h+='<main class="main" style="padding:0 0 16px;gap:0">'+list.map(function(n){return '<button class="notif'+(n.unread?' unread':'')+'" data-note="'+esc(n.id)+'"'+(n.o?' data-onote="'+esc(n.o)+'"':'')+'><span class="ic'+(n.kind==='news'?' news':'')+'">'+(n.kind==='news'?'i':'▤')+'</span><span class="col" style="gap:3px"><span class="sb">'+esc(n.t)+'</span><span style="font-size:13px;color:var(--muted);line-height:1.4">'+esc(n.s)+'</span>'+(n.d?'<span class="tiny">'+fd(n.d)+'</span>':'')+'</span>'+(n.unread?'<span style="width:8px;height:8px;border-radius:4px;background:var(--hot);margin-top:6px;flex-shrink:0"></span>':'')+'</button>';}).join('');
+  h+='<div class="card row" style="margin:16px 16px 0;padding:12px 14px"><span class="col"><span class="sb">Also send by SMS</span><span class="sub">To the Mobile Phone Relisys has on file</span></span><button class="toggle'+(S.sms?' on':'')+'" data-act="sms" aria-pressed="'+S.sms+'" aria-label="Send notifications by SMS"><i></i></button></div></main>';
+  return h+nav('');
+};
+V.account=function(){
+  var c=S.cust, os=myOrders().filter(function(o){return !o.app;}), open=os.filter(function(o){var k=ostat(o).k;return k==='placed'||k==='proc'||k==='part';}).length;
+  var ns=notes().filter(function(n){return n.unread;}).length, initials=c.name.replace(/[^A-Za-z ]/g,'').split(' ').filter(Boolean).slice(0,2).map(function(w){return w[0];}).join('').toUpperCase();
+  var h='<header class="hdr"><span class="h1">Account</span></header><main class="main" style="gap:14px">';
+  h+='<section class="card pad" style="display:flex;flex-direction:column;gap:12px"><div class="row"><span style="width:48px;height:48px;border-radius:12px;background:var(--brand);color:#fff;font-size:18px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+esc(initials)+'</span><span class="col"><span class="b" style="font-size:16px">'+esc(c.name)+'</span><span class="sub">'+esc(c.code)+' · '+esc(c.group||'')+(c.city?' · '+esc(c.city):'')+'</span></span></div>';
+  h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><div style="background:var(--bg);border-radius:10px;padding:10px 12px" class="col"><span class="b" style="font-size:18px">'+os.length+'</span><span class="sub">Orders, last 90 days</span></div><div style="background:var(--bg);border-radius:10px;padding:10px 12px" class="col"><span class="b" style="font-size:18px">'+open+'</span><span class="sub">Open orders</span></div></div>';
+  h+='<dl class="kv"><dt>Login mobile</dt><dd>+91 ••••• •••'+esc(String(c.mobile||'').slice(-2))+'</dd>'+(c.contact?'<dt>Contact</dt><dd>'+esc(c.contact)+'</dd>':'')+(c.email?'<dt>Email</dt><dd>'+esc(c.email)+'</dd>':'')+(c.gstin?'<dt>GSTIN</dt><dd>'+esc(c.gstin)+'</dd>':'')+'</dl><span class="tiny" style="line-height:1.45">These details come from Relisys. To change them, contact your Relisys sales team.</span></section>';
+  var all=S.allAddr, sh=all?c.shipTo:c.shipTo.slice(0,3);
+  h+='<section class="card" style="display:flex;flex-direction:column"><div class="row" style="padding:14px 16px 10px;justify-content:space-between"><span class="b" style="font-size:15px">Addresses</span><span class="sub">1 billing · '+c.shipTo.length+' ship-to</span></div>';
+  if(c.billTo)h+='<div class="col" style="padding:10px 16px;border-top:1px solid var(--line2)"><span class="tiny sb">BILL TO</span><span class="sb">'+esc(c.name)+'</span><span class="sub" style="line-height:1.4">'+esc(c.billTo)+'</span></div>';
+  h+=sh.map(function(a,i){return '<div class="col" style="padding:10px 16px;border-top:1px solid var(--line2)"><span class="tiny sb">SHIP TO'+(i===0?' · DEFAULT':'')+'</span><span class="sb">'+esc(a[0])+'</span><span class="sub">'+esc([a[1],a[2]].filter(Boolean).join(' · '))+'</span></div>';}).join('');
+  if(c.shipTo.length>3)h+='<button data-act="addr" style="height:48px;border:0;border-top:1px solid var(--line2);background:transparent;font-weight:600;color:var(--brand)">'+(all?'Show fewer':'Show all '+c.shipTo.length+' ship-to addresses')+'</button>';
+  h+='</section><section class="card menu" style="overflow:hidden"><button data-go="notif">'+ic('bell',20,'#4B5563')+'<span style="flex:1">Notifications</span>'+(ns?'<span class="pill" style="background:var(--hot);color:#fff;border-radius:10px">'+ns+'</span>':'')+ic('next',18,'#9CA3AF')+'</button><button data-go="freq">'+ic('star',20,'#4B5563')+'<span style="flex:1">Frequent items</span>'+ic('next',18,'#9CA3AF')+'</button><button data-go="help">'+ic('help',20,'#4B5563')+'<span style="flex:1">Help &amp; contact Relisys</span>'+ic('next',18,'#9CA3AF')+'</button></section>';
+  h+='<button class="btn danger" data-act="signout">Sign out</button><span class="tiny" style="text-align:center">Relisys Order portal · prototype · sample customers · SAP products as of '+fd(D.asOf)+'</span></main>';
+  return h+nav('account');
+};
+V.help=function(){
+  var c=S.cust, F=[
+   ['How do I place an order?','Open a product, pick the diameter, set the quantity for each length and add to cart. In the cart choose the ship-to address and tap Place order. You can also reorder a past order or add sizes from Frequent items.'],
+   ['What do the order statuses mean?','Placed: Relisys has your order. Under process: Relisys has set a delivery date. Partly shipped: some sizes have been dispatched on a delivery challan. Shipped: everything has been dispatched.'],
+   ['Why are prices not shown?','Orders are placed without prices. Your agreed prices are applied by Relisys on the invoice.'],
+   ['Can I cancel an order?','Yes, while it is still Placed. Once it is under process, contact the Relisys sales desk.'],
+   ['How do I change my login mobile number?','Your login number is the one Relisys has on file for your company. Ask the Relisys sales desk to update it.'],
+   ['I can’t find a product','Some products may not be offered to your account. Contact the Relisys sales desk if you need one added.']];
+  var o=S.faq==null?1:S.faq;
+  var h=backHdr('Help & contact')+'<main class="main" style="gap:14px"><section class="card pad" style="display:flex;flex-direction:column;gap:12px"><span class="col" style="flex:none"><span class="tiny sb">YOUR RELISYS CONTACT</span><span class="b" style="font-size:16px">'+esc(c.slp||'Relisys sales desk')+'</span>'+(c.slp?'<span class="sub">Your sales representative</span>':'<span class="sub" style="line-height:1.45">Your sales representative appears here once one is assigned to your account in SAP.</span>')+'</span><div style="display:flex;gap:8px"><button class="btn sm" style="flex:1">Call</button><button class="btn ghost sm" style="flex:1;color:var(--ok);border-color:#86EFAC">WhatsApp</button><button class="btn ghost sm" style="flex:1">Email</button></div><span class="demo">Demo: contact buttons are not connected yet.</span></section>';
+  h+='<section class="card" style="overflow:hidden"><div class="b" style="padding:14px 16px 10px;font-size:15px">Common questions</div>'+F.map(function(f,i){var op=o===i;return '<div style="border-top:1px solid var(--line2)"><button data-faq="'+i+'" aria-expanded="'+op+'" style="width:100%;min-height:52px;padding:10px 16px;border:0;background:transparent;font-weight:600;text-align:left;display:flex;gap:10px;align-items:center"><span style="flex:1">'+f[0]+'</span><span aria-hidden="true" style="font-size:18px;color:var(--muted)">'+(op?'−':'+')+'</span></button>'+(op?'<div style="padding:0 16px 14px;font-size:13px;color:#374151;line-height:1.55">'+f[1]+'</div>':'')+'</div>';}).join('')+'</section></main>';
+  return h+nav('');
+};
+
+
+// ---------- staff screens (Relisys staff sign in with their SAP user) ----------
+var STAFF_SCR={slogin:1,shome:1,svis:1,sstaff:1};
+function staffList(){return D.staff||[];}
+function hasAccess(u){return u[3]||!!S.access[u[0]];}
+function staffUser(){return staffList().find(function(u){return u[0]===S.staff;})||[S.staff,S.staff,'',false];}
+function ordCount(code){return D.orders.filter(function(o){return o.c===code;}).length;}
+function sHdr(title,sub){var u=staffUser();return '<header class="shdr"><div class="hdr-row" style="justify-content:space-between"><span class="hdr-row"><span style="font-size:20px;font-weight:700;letter-spacing:-.02em">Relisys</span><span class="sbadge">Staff</span></span><button class="sbtn" data-act="ssignout">Sign out</button></div><span class="sub" style="font-size:12px">Signed in with SAP · '+esc(u[1])+'</span></header>'+(title?'<div style="background:var(--surface);border-bottom:1px solid var(--line);padding:12px 16px;flex:none" class="col"><span class="h1" style="font-size:19px">'+esc(title)+'</span>'+(sub?'<span class="sub" style="line-height:1.45">'+sub+'</span>':'')+'</div>':'');}
+function snav(on){var T=[['shome','Customers','users'],['svis','Products shown','eye'],['sstaff','Staff access','shield']];
+  return '<nav class="nav">'+T.map(function(t){return '<button data-go="'+t[0]+'" class="'+(on===t[0]?'on':'')+'"'+(on===t[0]?' aria-current="page"':'')+'>'+ic(t[2])+t[1]+'</button>';}).join('')+'</nav>';}
+function hideSummary(code){var hg=hiddenG(code),n=0,items=0;D.groups.forEach(function(g){if(hg[g.id]){n++;items+=g.items.length;}});return n?n+' group'+(n===1?'':'s')+' hidden ('+items.toLocaleString('en-IN')+' items)':'Sees all products';}
+V.slogin=function(){
+  var ok=staffList().filter(hasAccess);
+  var h='<div class="main" style="padding:16px 24px 24px;gap:14px;background:var(--surface)"><button class="btn ghost sm" data-go="login" style="border:0;align-self:flex-start;padding:0">'+ic('back',18)+'Customer sign in</button>';
+  h+='<div class="col" style="flex:none;gap:8px;margin:8px 0 8px"><span class="hdr-row"><span class="brand" style="font-size:32px;letter-spacing:-.03em">Relisys</span><span class="sbadge" style="background:#111827;color:#fff">Staff</span></span><span class="h1" style="font-size:22px">Sign in with SAP</span><span style="font-size:15px;color:var(--muted);line-height:1.5">Use your SAP Business One username and password. Only SAP users with app access can sign in.</span></div>';
+  h+='<label for="su" class="sb">SAP username</label><input id="su" class="field" autocomplete="username" value="'+esc(S.su||'')+'" placeholder="e.g. manager"><label for="sp" class="sb">SAP password</label><input id="sp" class="field" type="password" autocomplete="current-password" placeholder="Password">'+(S.serr?'<div class="err">'+esc(S.serr)+'</div>':'')+'<button class="btn" data-act="ssignin" style="background:#111827">Sign in</button>';
+  if(ok.length)h+='<div class="note" style="flex-direction:column;gap:8px"><span class="sb" style="color:var(--ink)">Demo: sign in as a staff user</span><span>In this prototype SAP doesn’t check the password. Pick a SAP user who has app access.</span><select id="spick" class="field" style="font-size:14px">'+ok.map(function(u){return '<option value="'+esc(u[0])+'">'+esc(u[1])+' ('+esc(u[0])+')</option>';}).join('')+'</select><button class="btn ghost sm" data-act="spick">Use this SAP user</button></div>';
+  h+='<div style="flex:1"></div><div class="note">'+ic('lock',18,'#4B5563')+'<span>SAP checks your password; this app never saves it. Forgot it or locked out? Ask your SAP administrator.</span></div></div>';
+  return h;
+};
+function sList(){
+  var q=normq(S.sq||''), f=S.sf;
+  var list=D.customers.filter(function(c){
+    if(q&&normq(c.code+' '+c.name+' '+(c.city||'')).indexOf(q)<0)return false;
+    if(f==='active')return ordCount(c.code)>0;if(f==='blocked')return !!S.blocked[c.code];if(f==='hidden')return Object.keys(hiddenG(c.code)).length>0;return true;});
+  list.sort(function(a,b){return ordCount(b.code)-ordCount(a.code)||a.name.localeCompare(b.name);});
+  if(!list.length)return '<div class="empty">No customers match.</div>';
+  return list.slice(0,60).map(function(c){var bl=!!S.blocked[c.code],n=ordCount(c.code);return '<button class="srow" data-scust="'+esc(c.code)+'"><span class="col" style="gap:3px"><span class="b" style="font-size:15px">'+esc(c.name)+'</span><span class="tiny">'+esc(c.code)+(c.city?' · '+esc(c.city):'')+' · '+n+' order'+(n===1?'':'s')+' · '+esc(hideSummary(c.code))+'</span></span><span class="pill" style="background:'+(bl?'#F3F4F6':'#DCFCE7')+';color:'+(bl?'#4B5563':'#166534')+'">'+(bl?'Blocked':'Can sign in')+'</span>'+ic('next',18,'#4B5563')+'</button>';}).join('')+(list.length>60?'<span class="tiny" style="text-align:center">Showing 60 of '+list.length+'. Search to find others.</span>':'');
+}
+V.shome=function(){
+  var nb=Object.keys(S.blocked).filter(function(k){return S.blocked[k];}).length;
+  var F=[['all','All · '+D.customers.length],['active','Ordered in 90 days'],['hidden','Products hidden'],['blocked','Blocked · '+nb]];
+  var h=sHdr('Customers','Customers with a Mobile Phone in SAP. Tap one to open the app as them or choose the products they see.');
+  h+='<main class="main" style="gap:10px"><label class="search" style="background:var(--surface);flex-shrink:0">'+ic('search',18,'#4B5563')+'<input id="sq" type="search" placeholder="Search name, BP code or city" value="'+esc(S.sq||'')+'" autocomplete="off" aria-label="Search customers"></label><div class="chips" role="group" aria-label="Filter customers" style="flex-shrink:0">'+F.map(function(x){return '<button class="chip'+(S.sf===x[0]?' on':'')+'" data-sf="'+x[0]+'" aria-pressed="'+(S.sf===x[0])+'">'+x[1]+'</button>';}).join('')+'</div><div id="slist" class="col" style="gap:8px;flex:none">'+sList()+'</div></main>';
+  h+=snav('shome');
+  if(S.sheet){var c=D.customers.find(function(x){return x.code===S.sheet;});if(c){var bl=!!S.blocked[c.code];
+    h+='<div class="sheet" data-act="sclose"><div role="dialog" aria-label="'+esc(c.name)+'" data-stop="1"><span style="width:40px;height:4px;border-radius:2px;background:#D1D5DB;align-self:center"></span><div class="row" style="align-items:flex-start"><span class="col"><span class="tiny sb">'+esc(c.code)+(c.city?' · '+esc(c.city):'')+'</span><span class="b" style="font-size:18px">'+esc(c.name)+'</span></span><button class="iconbtn plain" data-act="sclose" aria-label="Close" style="font-size:22px">×</button></div>';
+    h+='<dl class="kv"><dt>Mobile Phone in SAP</dt><dd>+91 ••••• •••'+esc(String(c.mobile).slice(-2))+'</dd>'+(c.contact?'<dt>Contact</dt><dd>'+esc(c.contact)+'</dd>':'')+'<dt>Orders, 90 days</dt><dd>'+ordCount(c.code)+'</dd><dt>Products shown</dt><dd>'+esc(hideSummary(c.code))+'</dd>'+(c.slp?'<dt>Sales employee</dt><dd>'+esc(c.slp)+'</dd>':'')+'</dl>';
+    h+='<button class="btn" data-sview="'+esc(c.code)+'">'+ic('eye',18,'#fff')+'Open as customer</button><button class="btn ghost" data-svis="'+esc(c.code)+'">Choose products shown</button>';
+    h+='<div class="row"><span class="col"><span class="sb">Allow sign-in</span><span class="sub">'+(bl?'Sign-in turned off by Relisys':'Signs in with an SMS code to the Mobile Phone in SAP')+'</span></span><button class="toggle'+(bl?'':' on')+'" data-sblock="'+esc(c.code)+'" aria-pressed="'+!bl+'" aria-label="Allow sign-in"><i></i></button></div></div></div>';}}
+  return h;
+};
+V.svis=function(){
+  if(!S.scust||!D.customers.some(function(c){return c.code===S.scust;}))S.scust=(D.demoPicks||[])[0]||D.customers[0].code;
+  var c=D.customers.find(function(x){return x.code===S.scust;}), hg=hiddenG(c.code), f=S.vf;
+  var hidN=0,hidI=0,allI=0;D.groups.forEach(function(g){allI+=g.items.length;if(hg[g.id]){hidN++;hidI+=g.items.length;}});
+  var opts=D.customers.slice().sort(function(a,b){return a.name.localeCompare(b.name);}).map(function(x){return '<option value="'+esc(x.code)+'"'+(x.code===c.code?' selected':'')+'>'+esc(x.name)+' ('+esc(x.code)+')</option>';}).join('');
+  var fgN=D.groups.filter(function(g){return g.kind==='FG';}).length;
+  var F=[['all','All '+D.groups.length],['FG','FG '+fgN],['OEM','OEM-FG '+(D.groups.length-fgN)],['hidden','Hidden '+hidN]];
+  var h=sHdr()+'<div style="background:var(--surface);border-bottom:1px solid var(--line);padding:12px 16px;display:flex;flex-direction:column;gap:10px;flex-shrink:0"><span class="h1" style="font-size:19px">Products shown</span><label for="svcust" class="tiny sb">Customer</label><select id="svcust" class="field" style="font-size:14px;height:44px;margin-top:-6px">'+opts+'</select><span class="sub">Customer sees <b style="color:var(--ink)">'+(allI-hidI).toLocaleString('en-IN')+'</b> of '+allI.toLocaleString('en-IN')+' items · <b style="color:var(--ink)">'+(D.groups.length-hidN)+'</b> of '+D.groups.length+' groups</span><div class="chips" role="group" aria-label="Filter groups">'+F.map(function(x){return '<button class="chip'+(f===x[0]?' on':'')+'" data-vf="'+x[0]+'" aria-pressed="'+(f===x[0])+'">'+x[1]+'</button>';}).join('')+'</div></div>';
+  var G=D.groups.filter(function(g){return f==='all'||(f==='hidden'?hg[g.id]:g.kind===f);});
+  h+='<main class="main" style="gap:0;padding:0">'+(G.length?G.map(function(g){var hid=!!hg[g.id];return '<div class="row" style="padding:10px 16px;min-height:60px;border-bottom:1px solid var(--line2);background:'+(hid?'#FFFBF5':'var(--surface)')+'"><span class="col" style="gap:2px"><span class="sb">'+esc(g.name)+'</span><span class="tiny" style="color:'+(hid?'#9A3412':'var(--faint)')+'">'+g.items.length+' items · '+(hid?'Hidden from customer':'Shown')+'</span></span><button class="toggle'+(hid?'':' on')+'" data-shide="'+esc(g.id)+'" aria-pressed="'+!hid+'" aria-label="'+(hid?'Show ':'Hide ')+esc(g.name)+'"><i></i></button></div>';}).join(''):'<div class="empty" style="margin:16px">No groups here.</div>')+'</main>';
+  h+='<div class="foot"><button class="btn ghost sm" data-act="sshowall" style="flex:1">Show everything</button><button class="btn sm" data-sview="'+esc(c.code)+'" style="flex:1">Open as customer</button></div>';
+  return h+snav('svis');
+};
+V.sstaff=function(){
+  var L=staffList(), n=L.filter(hasAccess).length;
+  var h=sHdr('Staff access','SAP users who can sign in to the staff screens. <b style="color:var(--ink)">'+n+'</b> of '+L.length+' have access.');
+  h+='<main class="main" style="gap:8px"><div class="note">'+ic('info',18,'#4B5563')+'<span>SAP superusers always have access. Lock a user in SAP and they lose access straight away.</span></div>';
+  h+=L.map(function(u){var on=hasAccess(u);return '<div class="srow"><span class="col" style="gap:3px"><span class="b" style="font-size:15px">'+esc(u[1])+'</span><span class="tiny">'+esc(u[0])+(u[2]?' · '+esc(u[2]):'')+' · '+(u[3]?'<b style="color:var(--brand)">Superuser</b>':'User')+'</span></span>'+(u[3]?'<span class="tiny sb">Always</span>':'<button class="toggle'+(on?' on':'')+'" data-sacc="'+esc(u[0])+'" aria-pressed="'+on+'" aria-label="App access for '+esc(u[1])+'"><i></i></button>')+'</div>';}).join('')||'<div class="empty">No SAP users in this snapshot.</div>';
+  return h+'</main>'+snav('sstaff');
+};
+function viewBar(){var c=S.cust;return '<div class="vbar" role="status">'+ic('eye',18,'#fff')+'<span style="flex:1"><b>Staff view · view only.</b> You see what '+esc(c?c.name:'the customer')+' sees.</span><button data-act="sexit">Exit</button></div>';}
+function staffIn(code){S.staff=code;S.view=null;S.cust=null;S.serr='';S.sheet=null;save();go('shome');}
+
+// ---------- render & events ----------
+function render(){
+  if(!D)return;
+  var m=app.querySelector('.main'), keepScroll=m&&S._lastScreen===S.screen?m.scrollTop:0;
+  var focusId=document.activeElement&&document.activeElement.id, selStart=focusId&&document.activeElement.selectionStart;
+  if(STAFF_SCR[S.screen]&&S.screen!=='slogin'&&!S.staff)S.screen='slogin';
+  if(!S.cust&&!STAFF_SCR[S.screen]&&S.screen!=='login')S.screen=S.staff?'shome':'login';
+  app.innerHTML=(S.view&&S.cust&&!STAFF_SCR[S.screen]?viewBar():'')+(V[S.screen]||V.home)()+(S.toast?'<div class="toast" role="status">'+esc(S.toast)+'</div>':'');
+  var m2=app.querySelector('.main');if(m2&&keepScroll)m2.scrollTop=keepScroll;
+  S._lastScreen=S.screen;
+  protoSend();
+  if(focusId){var el=document.getElementById(focusId);if(el){el.focus();try{el.setSelectionRange(selStart,selStart);}catch(e){}}}
+}
+function signIn(c){S.cust=c;S.lerr='';S.lstep='mobile';S.q='';if(+S.ship>=c.shipTo.length)S.ship=0;save();go('home');}
+app.addEventListener('input',function(e){
+  var t=e.target;
+  if(t.id==='q'){S.q=t.value;var l=document.getElementById('homelist');if(l)l.innerHTML=homeList();}
+  if(t.id==='mob'){S.mob=t.value.replace(/\D/g,'');}
+  if(t.id==='su'){S.su=t.value;}
+  if(t.id==='sq'){S.sq=t.value;var sl=document.getElementById('slist');if(sl)sl.innerHTML=sList();}
+  if(t.dataset.otp&&t.value){var nx=app.querySelector('[data-otp="'+(+t.dataset.otp+1)+'"]');if(nx)nx.focus();}
+});
+app.addEventListener('change',function(e){if(e.target.id==='ship'){S.ship=+e.target.value;save();}if(e.target.id==='svcust'){S.scust=e.target.value;render();}});
+app.addEventListener('keydown',function(e){if(e.key==='Enter'&&e.target.id==='mob'){e.preventDefault();act('sendotp');}});
+function act(a,el){
+  if(a==='back'){var map={product:'home',cart:S.prev==='product'?'product':'home',order:'orders',notif:S.prev&&S.prev!=='notif'?S.prev:'home',help:'account'};go(map[S.screen]||'home');return;}
+  if(a==='sendotp'){var m=(S.mob||'').slice(-10);if(m.length!==10){S.lerr='Enter your 10-digit mobile number.';render();return;}
+    var hits=D.customers.filter(function(c){return String(c.mobile).slice(-10)===m;});
+    if(!hits.length){S.lerr='This number isn’t registered with Relisys. Contact your Relisys sales representative to add it.';render();return;}
+    if(hits.length>1){S.lerr='This number is on more than one customer in Relisys records. Contact your Relisys sales representative to fix it.';render();return;}
+    if(S.blocked[hits[0].code]){S.lerr='Sign-in for this account is turned off by Relisys. Contact your Relisys sales representative.';render();return;}
+    S.lerr='';S.lhit=hits[0];S.lstep='otp';render();return;}
+  if(a==='pick'){var v=document.getElementById('pick').value, c=D.customers.find(function(x){return x.code===v;});
+    var dup=D.customers.filter(function(x){return String(x.mobile).slice(-10)===String(c.mobile).slice(-10);}).length>1;
+    S.mob=String(c.mobile).slice(-10);if(dup){S.lerr='This customer’s Mobile Phone is shared with another customer in SAP, so it can’t sign in until that is fixed.';render();return;}
+    if(S.blocked[c.code]){S.lerr='Sign-in for this account is turned off by Relisys. Contact your Relisys sales representative.';render();return;}
+    S.lhit=c;S.lerr='';S.lstep='otp';render();return;}
+  if(a==='verify'){var code=[].map.call(app.querySelectorAll('[data-otp]'),function(i){return i.value;}).join('');if(!/^\d{6}$/.test(code)){S.lerr='Enter all 6 digits.';render();return;}signIn(S.lhit);return;}
+  if(a==='chgno'){S.lstep='mobile';S.lerr='';render();return;}
+  if(a==='place'){var lines=Object.keys(S.cart).map(function(k){return [k,S.cart[k],S.cart[k]];});var n='APP-'+String(Date.now()).slice(-6);
+    S.appOrders.unshift({n:n,c:S.cust.code,d:today(),due:today(),st:'O',can:'N',lines:lines,dcs:[],inv:[],app:true,ship:S.cust.shipTo[+S.ship]});S.cart={};save();S.ofilter='all';go('orders');toast('Order '+n+' placed. Demo: saved on this phone only.');return;}
+  if(a==='readall'){notes().forEach(function(n){S.read[n.id]=1;});save();render();return;}
+  if(a==='sms'){S.sms=!S.sms;save();render();return;}
+  if(a==='addr'){S.allAddr=!S.allAddr;render();return;}
+  if(a==='ssignin'){var un=(S.su||'').trim().toLowerCase(),pw=(document.getElementById('sp')||{}).value||'';var u=staffList().find(function(x){return x[0].toLowerCase()===un;});
+    if(!un||!pw){S.serr='Enter your SAP username and password.';render();return;}
+    if(!u){S.serr='SAP didn’t accept this username or password.';render();return;}
+    if(!hasAccess(u)){S.serr='This SAP user doesn’t have access to the staff screens. Ask a Relisys admin to give access.';render();return;}
+    staffIn(u[0]);return;}
+  if(a==='spick'){var v=document.getElementById('spick').value;staffIn(v);return;}
+  if(a==='ssignout'){S.staff=null;S.view=null;S.cust=null;S.sheet=null;S.lstep='mobile';save();go('login');return;}
+  if(a==='sclose'){S.sheet=null;render();return;}
+  if(a==='sexit'){if(S.view)S.scust=S.view;S.view=null;S.cust=null;S.sheet=null;save();go(S.vfrom==='svis'?'svis':'shome');return;}
+  if(a==='sshowall'){S.hide[S.scust]={};save();toast('Saved. This customer sees all products.');return;}
+  if(a==='signout'&&S.view){act('sexit');return;}
+  if(a==='signout'){S.cust=null;S.cart={};S.lstep='mobile';S.mob='';save();go('login');return;}
+}
+app.addEventListener('click',function(e){
+  if(e.target.closest('[data-stop]')&&!e.target.closest('button'))return;
+  var b=e.target.closest('button,[data-go],[data-act]');if(!b||b.disabled)return;var d=b.dataset;
+  if(S.view&&(d.inc||d.dec||d.reorder||d.cancel||d.act==='place')){toast('View only. Customers place their own orders.');return;}
+  if(d.act)return act(d.act,b);
+  if(d.scust){S.sheet=d.scust;render();return;}
+  if(d.sview){var vc=D.customers.find(function(x){return x.code===d.sview;});S.vfrom=S.screen;S.view=vc.code;S.cust=vc;S.sheet=null;S.q='';S.gkind='FG';save();go('home');return;}
+  if(d.svis){S.scust=d.svis;S.sheet=null;go('svis');return;}
+  if(d.sblock){S.blocked[d.sblock]=!S.blocked[d.sblock];save();render();return;}
+  if(d.sf){S.sf=d.sf;render();return;}
+  if(d.vf){S.vf=d.vf;render();return;}
+  if(d.shide){var hm=S.hide[S.scust]=S.hide[S.scust]||{};if(hm[d.shide])delete hm[d.shide];else hm[d.shide]=1;save();render();return;}
+  if(d.sacc){S.access[d.sacc]=!S.access[d.sacc];save();render();return;}
+  if(d.go){if(d.go==='notif')S.prev=S.screen;go(d.go);return;}
+  if(d.inc){var cur=S.cart[d.inc]||0;setQty(d.inc,cur===0&&d.usual?+d.usual:cur+1);return;}
+  if(d.dec){setQty(d.dec,(S.cart[d.dec]||0)-1);return;}
+  if(d.group){S.gid=d.group;S.dia=null;go('product');return;}
+  if(d.dia){S.dia=d.dia;render();return;}
+  if(d.gkind){S.gkind=d.gkind;render();return;}
+  if(d.of){S.ofilter=d.of;render();return;}
+  if(d.order){S.oid=d.order;S.otab='pending';go('order');return;}
+  if(d.otab){S.otab=d.otab;render();return;}
+  if(d.cancel){S.cancelled[d.cancel]=1;save();render();toast('Order '+d.cancel+' cancelled.');return;}
+  if(d.reorder){var o=myOrders().find(function(x){return String(x.n)===String(d.reorder);});o.lines.forEach(function(l){if(ITEM[l[0]])S.cart[l[0]]=(S.cart[l[0]]||0)+l[1];});save();toast(o.lines.length+' sizes added to cart');return;}
+  if(d.ft){S.ftab=d.ft;render();return;}
+  if(d.star){var sv=S.saved[S.cust.code]=S.saved[S.cust.code]||{};sv[d.star]=!sv[d.star];save();render();return;}
+  if(d.nt){S.ntab=d.nt;render();return;}
+  if(d.note){S.read[d.note]=1;save();if(d.onote){S.oid=d.onote;S.otab='pending';go('order');}else render();return;}
+  if(d.faq!=null){S.faq=S.faq===+d.faq?-1:+d.faq;render();return;}
+});
+
+window.relBack=function(){if(S.sheet){S.sheet=null;render();return true;}if(S.screen==='slogin'){go('login');return true;}if(S.screen==='svis'||S.screen==='sstaff'){go('shome');return true;}if(S.screen==='shome')return false;
+  if(S.view&&S.screen==='home'){act('sexit');return true;}
+  if(['product','cart','order','notif','help'].indexOf(S.screen)>=0){act('back');return true;}if(S.screen!=='home'&&S.cust){go('home');return true;}return false;};
+// ---------- prototype page hooks: only active when the app runs inside the two-phone prototype page ----------
+var PROTO=window.parent!==window, syncing=false;
+var SYNC_KEYS=['screen','prev','gid','dia','gkind','oid','otab','ftab','ntab','ofilter','faq','lstep','mob','lerr','allAddr','q','sq','sf','vf','sheet','scust','serr','su','vfrom'];
+function protoSend(){if(!PROTO||syncing||!D||!S)return;var st={};SYNC_KEYS.forEach(function(k){st[k]=S[k]==null?null:S[k];});st.lhit=S.lhit?S.lhit.code:null;st.view=S.view||null;st.staff=S.staff||null;try{window.parent.postMessage({rel:'sync',st:st},'*');}catch(e){}}
+function byCode(code){return code?D.customers.find(function(c){return c.code===code;})||null:null;}
+function protoJump(scr){
+  S.toast='';S.lerr='';
+  S.sheet=null;
+  if(scr==='login'){S.cust=null;S.staff=null;S.view=null;S.cart={};S.lstep='mobile';S.mob='';S.lhit=null;save();go('login');return;}
+  var firstStaff=(staffList().filter(hasAccess)[0]||[])[0]||'manager';
+  if(scr==='slogin'){S.cust=null;S.staff=null;S.view=null;S.serr='';save();go('slogin');return;}
+  if(STAFF_SCR[scr]){if(!S.staff)S.staff=firstStaff;S.view=null;S.cust=null;save();go(scr);return;}
+  if(scr==='view'){if(!S.staff)S.staff=firstStaff;var vc=byCode((D.demoPicks||[])[0])||D.customers[0];S.view=vc.code;S.cust=vc;S.q='';save();go('home');return;}
+  if(S.staff||S.view){S.staff=null;S.view=null;S.cust=null;}
+  if(!S.cust){S.cust=byCode((D.demoPicks||[])[0])||D.customers[0];save();}
+  var mine=myOrders();
+  if(scr==='product'&&!(S.gid&&GROUP[S.gid])){var it=mine.length&&ITEM[mine[0].lines[0][0]];var g=it?GROUP[it.g]:D.groups.find(function(x){return x.sized;});S.gid=g?g.id:D.groups[0].id;S.dia=null;}
+  if(scr==='product'){S.prev='home';}
+  if(scr==='cart'&&!cartCount().n&&mine.length){mine[0].lines.slice(0,3).forEach(function(l){if(ITEM[l[0]])S.cart[l[0]]=l[1];});save();}
+  if(scr==='order'){var pick=mine.find(function(o){return ostat(o).k==='part';})||mine.find(function(o){return ostat(o).k==='proc';})||mine[0];if(!pick){go('orders');return;}S.oid=pick.n;S.otab='pending';}
+  if(scr==='notif')S.prev='home';
+  go(scr);
+}
+window.addEventListener('message',function(e){var m=e.data;if(!m||!m.rel||!D)return;
+  if(m.rel==='sync'){var x=store('state')||{};syncing=true;
+    S.cart=x.cart||{};S.ship=x.ship||0;S.appOrders=x.appOrders||[];S.cancelled=x.cancelled||{};S.saved=x.saved||{};S.read=x.read||{};S.sms=x.sms!==false;S.cust=byCode(x.cust);
+    S.staff=x.staff||null;S.view=x.view||null;S.hide=x.hide||{};S.blocked=x.blocked||{};S.access=x.access||{};
+    SYNC_KEYS.forEach(function(k){S[k]=m.st[k];});S.lhit=byCode(m.st.lhit);S.toast='';render();syncing=false;return;}
+  if(m.rel==='jump'){protoJump(m.screen);return;}
+  if(m.rel==='reset'){try{localStorage.removeItem('rel_state');}catch(err){}location.reload();}
+});
+function boot(data){D=data;prep();load();render();}
+if(window.RELISYS_DATA)boot(window.RELISYS_DATA);
+else fetch('data.json').then(function(r){return r.json();}).then(boot).catch(function(){app.innerHTML='<div class="loading" style="padding:24px;text-align:center">Couldn’t load the Relisys data. Reload the page to try again.</div>';});
+})();
+</script>
+
+</html>
